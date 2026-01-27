@@ -6,18 +6,36 @@ import {
   Pressable,
   TextInput,
   Keyboard,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
+import { useLoader } from "@/hooks/useLoader";
+import { login } from "@/services/authService";
 
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    console.log("Login to Dashboard");
-    router.replace("/home");
+  const { showLoader, hideLoader , isLoading } = useLoader();
+
+  const handleLogin = async () => {
+    if (!email || !password || isLoading ) {
+      Alert.alert("Error", "Please enter email and password");
+      return;
+    }
+    try {
+      showLoader()
+      await login(email, password);
+      router.replace("/home");
+    } catch (error) {
+      console.error(error)
+      Alert.alert("Login Failed", "Invalid email or password");
+      
+    }finally{
+      hideLoader()
+    }
   };
 
   return (
