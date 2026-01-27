@@ -1,15 +1,17 @@
+import { useLoader } from "@/hooks/useLoader";
+import { registerUser } from "@/services/authService";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
-  View,
-  Text,
+  Alert,
   Keyboard,
-  TouchableWithoutFeedback,
+  Pressable,
+  Text,
   TextInput,
   TouchableOpacity,
-  Pressable,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import React, { useState } from "react";
-import { useRouter } from "expo-router";
-import { useLoader } from "@/hooks/useLoader";
 
 const Register = () => {
   const router = useRouter();
@@ -22,7 +24,42 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleRegister = async () => {
-    // Registration logic will go here
+    if (isLoading) {
+      return;
+    }
+    if (!name || !email || !password) {
+      Alert.alert("Error", "Please fill all the fields");
+      return;
+    }
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert("Error", "Please enter a valid email address");
+      return;
+    }
+
+    // Password validation
+    if (password.length < 6) {
+      Alert.alert("Error", "Password must be at least 6 characters long");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+
+    try {
+      showLoader();
+      await registerUser(name, email, password);
+      Alert.alert("Success", "Registration Successful");
+      router.replace("/login");
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      const errorMessage = error.message || "An unknown error occurred";
+      Alert.alert("Registration Failed", errorMessage);
+    } finally {
+      hideLoader();
+    }
   };
 
   return (
@@ -67,10 +104,10 @@ const Register = () => {
             <Text className="text-white text-lg text-center">Register</Text>
           </Pressable>
           <View className="flex-row justify-center mt-2">
-            <Text className="text-gray-700">Alrady have an account? </Text>
+            <Text className="text-gray-700">Already have an account? </Text>
             <TouchableOpacity
               onPress={() => {
-                router.back()
+                router.back();
               }}
             >
               <Text className="text-blue-600 font-semibold">Login</Text>
