@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const Habits = () => {
+const Timer = () => {
   return (
     <View className='flex-1 justify-center items-center'>
-      <Text>Habits</Text>
+      <Text>Timer</Text>
     </View>
   )
 }
 
-export default Habits
+export default Timer
