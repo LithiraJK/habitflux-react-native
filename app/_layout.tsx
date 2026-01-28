@@ -12,7 +12,7 @@ const RootLayout = () => {
   return (
     <LoaderProvider>
       <AuthProvider>
-        <View className="flex-1" style={{ marginTop: insets.top }}>
+        <View className="flex-1" style={{ marginTop: insets.top , marginBottom: 10}}>
           {/* Slot renders the currently active screen */}
           <Slot />
         </View>

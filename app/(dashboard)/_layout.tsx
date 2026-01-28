@@ -22,17 +22,17 @@ const CustomDrawerContent = (props: any) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#121212" }}>
+    <View style={{ flex: 1 }}>
       <DrawerContentScrollView
         {...props}
-        contentContainerStyle={{ paddingTop: 50 }}
+        contentContainerStyle={{ paddingTop: 20 }}
       >
         {/* Main Navigation Items*/}
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
 
      
-      <View className="p-5 border-t border-gray-800 bg-[#1C1C1E] pb-10">
+      <View className="p-5 border-t border-gray-100 pb-10">
         <TouchableOpacity
           className="flex-row items-center"
           activeOpacity={0.7}
@@ -50,10 +50,10 @@ const CustomDrawerContent = (props: any) => {
           </View>
           
           <View className="ml-3 flex-1">
-            <Text className="text-white font-bold text-base leading-tight">
+            <Text className="font-bold text-base leading-tight">
               Lithira Jayanaka
             </Text>
-            <Text className="text-gray-400 text-xs" numberOfLines={1}>
+            <Text className="text-xs" numberOfLines={1}>
               lithira@gmail.com
             </Text>
           </View>
@@ -79,18 +79,20 @@ const DashboardDrawerLayout = () => {
         screenOptions={{
           headerShown: true,
           headerTitleStyle: { fontWeight: "bold" },
+          headerStatusBarHeight: 0,
           drawerActiveTintColor: "#818CF8",
           drawerLabelStyle: { marginLeft: -10, fontWeight: "700" },
           drawerStyle: { width: 280 },
+          
         }}
       >
         <Drawer.Screen
           name="(tabs)"
           options={{
             drawerLabel: "Home Dashboard",
-            title: "HabitFlux",
+            title: "Today",
             drawerIcon: ({ color, size }) => (
-              <FontAwesome5 name="home" color={color} size={size - 4} />
+              <FontAwesome5 name="home" color={color} size={size - 4} style={{ padding: 10 }} />
             ),
           }}
         />
@@ -101,7 +103,7 @@ const DashboardDrawerLayout = () => {
             drawerLabel: "Account Settings",
             title: "Settings",
             drawerIcon: ({ color, size }) => (
-              <FontAwesome5 name="cog" color={color} size={size - 4} />
+              <FontAwesome5 name="cog" color={color} size={size - 4} style={{ padding: 10 }} />
             ),
           }}
         />
