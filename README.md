@@ -43,8 +43,10 @@ npx expo install zustand
 #### SVG rendering support
 
 ```bash
-npm install react-native-svg react-native-svg-transformer
+npm install react-native-svg
 ```
+-----------------------------------------
+
 
 ## 🏃 Running the Application
 
