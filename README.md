@@ -32,6 +32,14 @@ npm install
 npm install date-fns
 ```
 
+#### State management library
+
+```bash
+npx expo install zustand
+```
+
+
+
 #### SVG rendering support
 
 ```bash
