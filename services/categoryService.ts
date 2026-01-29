@@ -10,36 +10,68 @@ import {
   serverTimestamp,
   updateDoc,
   where,
-  Timestamp
-} from 'firebase/firestore';
-import { db, auth } from './firebase'; 
+  Timestamp,
+} from "firebase/firestore";
+import { db, auth } from "./firebase";
 
 export interface Category {
   id?: string;
   title: string;
-  description?: string;
   icon: string;
   color: string;
+  isDefault: boolean;
   userId: string;
   createdAt?: Timestamp;
 }
 
-const categoryCollection = collection(db, 'categories');
+const categoryCollection = collection(db, "categories");
 
-export const addCategory = async (
-  title: string,
-  description: string,
-  icon: string,
-  color: string
-) => {
+const DEFAULT_CATEGORIES = [
+  { title: "Quit a bad habit", icon: "ban", color: "#F87171" },
+  { title: "Art", icon: "brush", color: "#FB923C" },
+  { title: "Task", icon: "time", color: "#FACC15" },
+  { title: "Meditation", icon: "leaf", color: "#4ADE80" },
+  { title: "Study", icon: "school", color: "#818CF8" },
+];
+
+export const initializeUserCategories = async () => {
   const user = auth.currentUser;
-  if (!user) throw new Error('User not authenticated.');
+  if (!user) return;
+
+  try {
+    const q = query(categoryCollection, where("userId", "==", user.uid));
+    const snapshot = await getDocs(q);
+
+    // if no categories exist for the user, add default categories
+    if (snapshot.empty) {
+      const promises = DEFAULT_CATEGORIES.map((cat) =>
+        addDoc(categoryCollection, {
+          ...cat,
+          userId: user.uid,
+          isDefault: true,
+          entries: 0,
+          createdAt: serverTimestamp(),
+        })
+      );
+      // Add all data in parallel
+      await Promise.all(promises);
+      console.log("Default categories initialized for:", user.uid);
+    }
+  } catch (error) {
+    console.error("Initialization Error:", error);
+  }
+};
+
+
+export const addCategory = async (title: string, icon: string, color: string) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated.");
 
   return await addDoc(categoryCollection, {
     title,
-    description,
     icon,
     color,
+    isDefault: false,
     userId: user.uid,
     createdAt: serverTimestamp(),
   });
@@ -48,12 +80,12 @@ export const addCategory = async (
 
 export const getAllCategory = async () => {
   const user = auth.currentUser;
-  if (!user) throw new Error('User not authenticated.');
+  if (!user) throw new Error("User not authenticated.");
 
   const q = query(
     categoryCollection,
-    where('userId', '==', user.uid),
-    orderBy('createdAt', 'desc')
+    where("userId", "==", user.uid),
+    orderBy("createdAt", "desc")
   );
 
   const snapshot = await getDocs(q);
@@ -61,27 +93,29 @@ export const getAllCategory = async () => {
     const data = dataSet.data();
     return {
       id: dataSet.id,
-      title: data.title,
-      description: data.description || '',
-      icon: data.icon || 'folder',
-      color: data.color || '#818CF8',
+      title: data.title || "New Category",
+      icon: data.icon || "folder",
+      color: data.color || "#818CF8",
+      isDefault: data.isDefault || false,
+      userId: data.userId,
+      entries: data.entries || 0,
       createdAt: data.createdAt,
-    };
+    } as Category;
   });
 };
 
 
 export const getCategoryById = async (id: string) => {
   const user = auth.currentUser;
-  if (!user) throw new Error('User not authenticated.');
+  if (!user) throw new Error("User not authenticated.");
 
-  const ref = doc(db, 'categories', id);
+  const ref = doc(db, "categories", id);
   const categoryDoc = await getDoc(ref);
 
-  if (!categoryDoc.exists()) throw new Error('Category not found');
+  if (!categoryDoc.exists()) throw new Error("Category not found");
 
   const data = categoryDoc.data();
-  if (data.userId !== user.uid) throw new Error('Unauthorized');
+  if (data.userId !== user.uid) throw new Error("Unauthorized access");
 
   return {
     id: categoryDoc.id,
@@ -92,16 +126,16 @@ export const getCategoryById = async (id: string) => {
 
 export const updateCategory = async (
   id: string,
-  updates: Partial<Omit<Category, 'id' | 'userId' | 'createdAt'>>
+  updates: Partial<Omit<Category, "id" | "userId" | "createdAt">>
 ) => {
   const user = auth.currentUser;
-  if (!user) throw new Error('User not authenticated.');
+  if (!user) throw new Error("User not authenticated.");
 
-  const ref = doc(db, 'categories', id);
+  const ref = doc(db, "categories", id);
   const snap = await getDoc(ref);
 
-  if (!snap.exists()) throw new Error('Category not found');
-  if (snap.data().userId !== user.uid) throw new Error('Unauthorized');
+  if (!snap.exists()) throw new Error("Category not found");
+  if (snap.data().userId !== user.uid) throw new Error("Unauthorized");
 
   await updateDoc(ref, {
     ...updates,
@@ -112,13 +146,13 @@ export const updateCategory = async (
 
 export const deleteCategory = async (id: string) => {
   const user = auth.currentUser;
-  if (!user) throw new Error('User not authenticated.');
+  if (!user) throw new Error("User not authenticated.");
 
-  const ref = doc(db, 'categories', id);
+  const ref = doc(db, "categories", id);
   const snap = await getDoc(ref);
 
-  if (!snap.exists()) throw new Error('Category not found');
-  if (snap.data().userId !== user.uid) throw new Error('Unauthorized');
+  if (!snap.exists()) throw new Error("Category not found");
+  if (snap.data().userId !== user.uid) throw new Error("Unauthorized");
 
   await deleteDoc(ref);
 };

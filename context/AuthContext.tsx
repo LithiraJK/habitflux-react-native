@@ -2,6 +2,7 @@ import React, { createContext, ReactNode, useEffect, useState } from 'react'
 import { useLoader } from '@/hooks/useLoader'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { auth } from '@/services/firebase';
+import { initializeUserCategories } from '@/services/categoryService';
 
 interface AuthContextType {
   user: User | null;
@@ -22,6 +23,7 @@ const AuthProvider = ({children}:{children:ReactNode}) => {
     showLoader()
     const unsubscribe = onAuthStateChanged(auth, (user) =>{
       setUser(user)
+      initializeUserCategories();
       hideLoader()
     })
     // Cleanup subscription on unmount

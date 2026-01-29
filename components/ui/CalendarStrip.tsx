@@ -18,7 +18,7 @@ const CalendarStrip = () => {
       data={dates}
       horizontal
       showsHorizontalScrollIndicator={false}
-      initialScrollIndex={250}
+      initialScrollIndex={500}
       getItemLayout={(_, index) => ({
         length: ITEM_WIDTH,
         offset: ITEM_WIDTH * index,
