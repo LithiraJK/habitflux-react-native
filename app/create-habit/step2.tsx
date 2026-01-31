@@ -1,18 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useHabitCreateStore } from '@/store/useHabitCreatestore';
 
 const ProgressEvaluation = () => {
   const router = useRouter();
   const { setStepData } = useHabitCreateStore();
 
-  const handleSelect = (type: 'yes_no' | 'timer') => {
-    
+  const handleSelect = (type: 'yes_no' | 'timer' | 'count') => {
     setStepData({ type });
-    
-    router.push('/create-habit/step3');
+    router.push('/create-habit/step3'); 
   };
 
   return (
@@ -25,25 +22,34 @@ const ProgressEvaluation = () => {
       <TouchableOpacity 
         onPress={() => handleSelect('yes_no')} 
         activeOpacity={0.8}
-        className="bg-[#083344] p-6 rounded-2xl mb-6 flex-row justify-between items-center border border-[#0891B2] shadow-lg"
+        className="bg-[#0891B2] p-4 rounded-2xl mb-4 flex-row justify-center items-center shadow-lg"
       >
-        <View>
+        <View className="items-center mr-4">
           <Text className="text-white font-bold text-lg mb-1">WITH A YES OR NO</Text>
-          <Text className="text-gray-400 text-xs">Record whether you succeed or not</Text>
+          <Text className="text-white text-xs">Simple check: Did I do it? (e.g., Wake up early)</Text>
         </View>
-        <Ionicons name="checkmark-circle" size={32} color="#22C55E" />
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        onPress={() => handleSelect('count')} 
+        activeOpacity={0.8}
+        className="bg-[#0891B2] p-4 rounded-2xl mb-4 flex-row justify-center items-center shadow-lg"
+      >
+        <View className="items-center mr-4">
+          <Text className="text-white font-bold text-lg mb-1">WITH A NUMERIC VALUE</Text>
+          <Text className="text-white text-xs">Track units (e.g., 2000ml water, 10 pages)</Text>
+        </View>
       </TouchableOpacity>
 
       <TouchableOpacity 
         onPress={() => handleSelect('timer')} 
         activeOpacity={0.8}
-        className="bg-[#083344] p-6 rounded-2xl flex-row justify-between items-center border border-[#0891B2] shadow-lg"
+        className="bg-[#0891B2] p-4 rounded-2xl mb-4 flex-row justify-center items-center shadow-lg"
       >
-        <View>
+        <View className="items-center mr-4">
           <Text className="text-white font-bold text-lg mb-1">WITH A TIMER</Text>
-          <Text className="text-gray-400 text-xs">Establish a time value as a daily goal</Text>
+          <Text className="text-white text-xs">Track duration (e.g., Meditate for 30 mins)</Text>
         </View>
-        <Ionicons name="timer" size={32} color="#22C55E" />
       </TouchableOpacity>
 
       <View className="mt-auto flex-row justify-between items-center mb-6">
@@ -51,16 +57,14 @@ const ProgressEvaluation = () => {
           <Text className="text-gray-400 font-bold text-base">BACK</Text>
         </TouchableOpacity>
 
-    
         <View className="flex-row space-x-2">
-          <View className="w-2 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 h-2 rounded-full bg-[#0891B2]" />
-          <View className="w-2 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 h-2 rounded-full bg-[#083344]" />
+          <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
+          <View className="w-2 m-1 h-2 rounded-full bg-[#0891B2]" />
+          <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
+          <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
+          <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
         </View>
 
-    
         <View style={{ width: 40 }} /> 
       </View>
 
