@@ -38,6 +38,11 @@ npm install date-fns
 npx expo install zustand
 ```
 
+#### Calendar component
+
+```bash
+npm install react-native-calendars
+```
 
 
 #### SVG rendering support

@@ -10,35 +10,64 @@ import {
   query,
   updateDoc,
   where,
-  serverTimestamp,
-  Timestamp
+  Timestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
-// Type Definitions for Type Safety
+
 export interface Habit {
   id?: string;
   userId: string;
   title: string;
   description?: string;
-  category?: string;
-  type?: 'yes_no' | 'timer';
-  frequency?: string;
-  startDate?: string;
+  category?: string; 
+  priority?: 'High' | 'Medium' | 'Low';
+  color?: string;
+  icon?: string;
+
+  type: 'yes_no' | 'timer' | 'count';
+  
+  frequency: {
+    type: 'daily' | 'weekly' | 'monthly' | 'specific_days';
+    daysOfWeek?: number[];
+    interval?: number;     
+  };
+
+  startDate: string;
   endDate?: string | null;
-  priority?: string;
-  reminders?: number;
+  reminders?: {
+    time: string;
+    type: 'notification' | 'alarm' | 'none';
+    schedule: 'always' | 'specific_days' | 'days_before';
+  }[];
+  
   isComplete: boolean;
+  dailyTarget: number;
+  dailyProgress: number;
+
+  history: { 
+    [date: string]: { 
+      status: 'completed' | 'failed' | 'skipped' | 'partial'; 
+      progress: number; 
+    } 
+  }; 
+  
+  currentStreak: number;
+  bestStreak: number;
+  totalCompleted: number;
+  isArchived: boolean;
+  
   createdAt: string | Timestamp;
 }
+
 
 const auth = getAuth();
 const habitsCollection = collection(db, 'habits');
 
-/**
- * ➕ Create a new habit
- * Accepts a full habit object from the creation wizard
- */
+// Helper function to get today's date as YYYY-MM-DD
+const getTodayDateString = () => new Date().toISOString().split('T')[0];
+
+
 export const addHabit = async (habitData: Partial<Habit>) => {
   const user = auth.currentUser;
   if (!user) throw new Error('User not authenticated.');
@@ -46,15 +75,23 @@ export const addHabit = async (habitData: Partial<Habit>) => {
   await addDoc(habitsCollection, {
     ...habitData,
     userId: user.uid,
-    isComplete: false, // Default status
-    createdAt: new Date().toISOString(), // Use ISO string for easier sorting/parsing
+    
+    isComplete: false,
+    dailyProgress: 0,
+    dailyTarget: habitData.dailyTarget ?? 1,
+    frequency: habitData.frequency || { type: 'daily', interval: 1 },
+
+    currentStreak: 0,
+    bestStreak: 0,
+    totalCompleted: 0,
+    history: {},
+    isArchived: false,
+    
+    createdAt: new Date().toISOString(),
   });
 };
 
-/**
- * 📂 Get all habits for the current user
- * Requires a Firestore Composite Index: userId (ASC) + createdAt (DESC)
- */
+
 export const getAllHabit = async () => {
   const user = auth.currentUser;
   if (!user) throw new Error('User not authenticated.');
@@ -72,9 +109,7 @@ export const getAllHabit = async () => {
   })) as Habit[];
 };
 
-/**
- * 🔍 Get a single habit by ID
- */
+
 export const getHabitById = async (id: string) => {
   const user = auth.currentUser;
   if (!user) throw new Error('User not authenticated.');
@@ -84,18 +119,66 @@ export const getHabitById = async (id: string) => {
 
   if (!habitDoc.exists()) throw new Error('Habit not found');
 
-  const data = habitDoc.data();
+  const data = habitDoc.data() as Habit;
+  
   if (data.userId !== user.uid) throw new Error('Unauthorized');
 
   return {
     id: habitDoc.id,
     ...data,
-  } as Habit;
+  };
 };
 
-/**
- * ✏️ Update an existing habit
- */
+
+export const toggleHabitCompletion = async (id: string, isComplete: boolean) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error('User not authenticated.');
+
+  const ref = doc(db, 'habits', id);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) throw new Error('Habit not found');
+  const data = snap.data() as Habit;
+
+  if (data.userId !== user.uid) throw new Error('Unauthorized');
+
+  const today = getTodayDateString();
+  const newHistory = { ...(data.history || {}) };
+
+  let newCurrentStreak = data.currentStreak || 0;
+  let newTotalCompleted = data.totalCompleted || 0;
+  let newBestStreak = data.bestStreak || 0;
+
+  if (isComplete) {
+    newHistory[today] = { 
+        status: 'completed', 
+        progress: data.dailyTarget || 1 
+    };
+    
+    newTotalCompleted += 1;
+    newCurrentStreak += 1; 
+    
+    if (newCurrentStreak > newBestStreak) {
+      newBestStreak = newCurrentStreak;
+    }
+  } else {
+    delete newHistory[today];
+    
+    newTotalCompleted = Math.max(0, newTotalCompleted - 1);
+    newCurrentStreak = Math.max(0, newCurrentStreak - 1);
+  }
+
+  await updateDoc(ref, {
+    isComplete: isComplete,
+    dailyProgress: isComplete ? (data.dailyTarget || 1) : 0,
+    history: newHistory,
+    currentStreak: newCurrentStreak,
+    bestStreak: newBestStreak,
+    totalCompleted: newTotalCompleted,
+  });
+};
+
+
 export const updateHabit = async (
   id: string,
   updates: Partial<Omit<Habit, 'id' | 'userId' | 'createdAt'>>
@@ -107,14 +190,13 @@ export const updateHabit = async (
   const snap = await getDoc(ref);
 
   if (!snap.exists()) throw new Error('Habit not found');
+  
   if (snap.data().userId !== user.uid) throw new Error('Unauthorized');
 
   await updateDoc(ref, updates);
 };
 
-/**
- * 🗑️ Delete a habit
- */
+
 export const deleteHabit = async (id: string) => {
   const user = auth.currentUser;
   if (!user) throw new Error('User not authenticated.');
@@ -123,31 +205,14 @@ export const deleteHabit = async (id: string) => {
   const snap = await getDoc(ref);
 
   if (!snap.exists()) throw new Error('Habit not found');
+  
   if (snap.data().userId !== user.uid) throw new Error('Unauthorized');
 
   await deleteDoc(ref);
 };
 
-/**
- * ✅ Mark a habit as complete/incomplete
- */
-export const completeHabit = async (id: string, isComplete: boolean = true) => {
-  const user = auth.currentUser;
-  if (!user) throw new Error('User not authenticated.');
 
-  const ref = doc(db, 'habits', id);
-  // Optional: Check ownership here again if strictly needed, 
-  // but Firestore rules should handle it in production.
-  
-  await updateDoc(ref, { isComplete });
-};
-
-/**
- * 📊 Analytics: Get counts of completed vs pending habits
- */
 export const getHabitCounts = async () => {
-  // Note: For large datasets, use Firestore 'count()' aggregation instead of fetching all docs.
-  // For now (MVP), fetching all is acceptable.
   const habits = await getAllHabit();
   const completedCount = habits.filter((habit) => habit.isComplete).length;
   const pendingCount = habits.filter((habit) => !habit.isComplete).length;
@@ -155,9 +220,7 @@ export const getHabitCounts = async () => {
   return { completedCount, pendingCount };
 };
 
-/**
- * 📑 Get habits filtered by completion status
- */
+
 export const getAllHabitByStatus = async (isComplete: boolean) => {
   const user = auth.currentUser;
   if (!user) throw new Error('User not authenticated.');

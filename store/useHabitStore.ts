@@ -1,15 +1,15 @@
 import { create } from 'zustand';
-import { getAllHabit, completeHabit } from '@/services/habitService'; // Service import
+import { getAllHabit, toggleHabitCompletion, Habit } from '@/services/habitService';
 
 interface HabitState {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
   
-  habits: any[]; 
-  isLoading: boolean; // Loading state එක වැදගත්
+  habits: Habit[]; 
+  isLoading: boolean;
   
-  fetchHabits: () => Promise<void>; // දත්ත ලබා ගැනීමට
-  toggleHabitStatus: (id: string, currentStatus: boolean) => Promise<void>; // Complete කිරීමට
+  fetchHabits: () => Promise<void>;
+  toggleHabitStatus: (id: string, currentStatus: boolean) => Promise<void>;
 }
 
 export const useHabitStore = create<HabitState>((set, get) => ({
@@ -19,7 +19,6 @@ export const useHabitStore = create<HabitState>((set, get) => ({
   habits: [],
   isLoading: false,
 
-  // 🚀 1. Firebase වලින් දත්ත ලබා ගැනීම
   fetchHabits: async () => {
     set({ isLoading: true });
     try {
@@ -31,21 +30,46 @@ export const useHabitStore = create<HabitState>((set, get) => ({
     }
   },
 
-  // 🚀 2. Habit එක Complete/Incomplete කිරීම (Optimistic Update)
   toggleHabitStatus: async (id, currentStatus) => {
-    // UI එක ඉක්මනින් Update කිරීමට (Server එකට යන්න කලින්)
-    const updatedHabits = get().habits.map((habit) => 
-      habit.id === id ? { ...habit, isComplete: !currentStatus } : habit
-    );
+    const previousHabits = get().habits;
+    const newStatus = !currentStatus;
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    const updatedHabits = previousHabits.map((habit) => {
+      if (habit.id !== id) return habit;
+
+      const updatedHabit = { ...habit, isComplete: newStatus };
+      
+      if (newStatus) {
+        updatedHabit.history = { 
+            ...habit.history, 
+            [todayStr]: { status: 'completed', progress: habit.dailyTarget || 1 } 
+        };
+        updatedHabit.currentStreak = (habit.currentStreak || 0) + 1;
+        updatedHabit.totalCompleted = (habit.totalCompleted || 0) + 1;
+        
+        if (updatedHabit.currentStreak > (updatedHabit.bestStreak || 0)) {
+            updatedHabit.bestStreak = updatedHabit.currentStreak;
+        }
+      } else {
+        const newHistory = { ...habit.history };
+        delete newHistory[todayStr];
+        updatedHabit.history = newHistory;
+        
+        updatedHabit.currentStreak = Math.max(0, (habit.currentStreak || 0) - 1);
+        updatedHabit.totalCompleted = Math.max(0, (habit.totalCompleted || 0) - 1);
+      }
+
+      return updatedHabit;
+    });
+
     set({ habits: updatedHabits });
 
-    // Background එකේ Database එක Update කිරීම
     try {
-      await completeHabit(id, !currentStatus);
+      await toggleHabitCompletion(id, newStatus);
     } catch (error) {
       console.error("Update failed", error);
-      // Error එකක් ආවොත් පරණ තත්ත්වයට පත් කරන්න (Rollback)
-      set({ habits: get().habits }); 
+      set({ habits: previousHabits });
     }
   }
 }));
