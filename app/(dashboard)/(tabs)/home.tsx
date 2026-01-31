@@ -1,13 +1,18 @@
-import React, { useCallback, useMemo, useEffect } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { View, TouchableOpacity, Text, ScrollView, RefreshControl, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, router } from 'expo-router';
 import { format } from 'date-fns';
+
+// Import UI Components
 import HabitItem from '@/components/ui/HabitItem';
 import CalendarStrip from '@/components/ui/CalendarStrip';
 import ProgressRing from '@/components/ui/ProgressRing';
+
+// Import Stores & Services
 import { useHabitStore } from '@/store/useHabitStore';
 import { useCategoryStore } from '@/store/useCategoryStore';
+import { Habit } from '@/services/habitService';
 
 const HomeScreen = () => {
   const { 
@@ -24,6 +29,7 @@ const HomeScreen = () => {
     fetchCategories 
   } = useCategoryStore();
 
+  // Combine default and user-defined categories
   const allCategories = useMemo(() => [...categories, ...defaultCategories], [categories, defaultCategories]);
 
   useFocusEffect(
@@ -33,16 +39,17 @@ const HomeScreen = () => {
     }, [])
   );
 
-  // Progress Calculation
+
   const progressPercentage = useMemo(() => {
     if (habits.length === 0) return 0;
     const completedCount = habits.filter(h => h.isComplete).length;
     return Math.round((completedCount / habits.length) * 100);
   }, [habits]);
 
- 
-  const getHabitStyle = (categoryId: string) => {
-    const foundCategory =  allCategories.find(cat => cat.id === categoryId);
+  const getHabitStyle = (categoryId: string | undefined) => {
+    if (!categoryId) return { icon: 'leaf', color: '#818CF8' };
+
+    const foundCategory = allCategories.find(cat => cat.id === categoryId);
     
     if (foundCategory) {
       return { 
@@ -54,10 +61,22 @@ const HomeScreen = () => {
     return { icon: 'leaf', color: '#818CF8' };
   };
 
+  const getFrequencyLabel = (frequency: Habit['frequency']) => {
+    if (!frequency) return "Daily";
+    
+    if (frequency.type === 'daily') {
+        return frequency.interval === 1 ? "Daily" : `Every ${frequency.interval} days`;
+    }
+    if (frequency.type === 'weekly') return "Weekly";
+    if (frequency.type === 'monthly') return "Monthly";
+    
+    return "Custom";
+  };
+
   return (
     <View className="flex-1 bg-[#121212]">
       
-      {/* Calendar Strip */}
+    
       <View className="px-4 h-[100px] justify-center z-10">
         <CalendarStrip />
       </View>
@@ -74,19 +93,19 @@ const HomeScreen = () => {
           />
         }
       >
-        {/* Date Header */}
+      
         <View className="pt-2 pb-1">
           <Text className="text-gray-400 text-xs font-medium uppercase tracking-widest">
             {format(selectedDate, "EEEE, d MMMM")}
           </Text>
         </View>
 
-        {/* Progress Ring */}
+       
         <View className="items-center mt-4 mb-6">
           <ProgressRing percentage={progressPercentage} size={160} />
         </View>
 
-        {/* Habits List */}
+       
         <View className="flex-1">
           {isHabitLoading && habits.length === 0 ? (
             <ActivityIndicator size="large" color="#818CF8" className="mt-10" />
@@ -104,11 +123,11 @@ const HomeScreen = () => {
                 <HabitItem 
                   key={habit.id}
                   title={habit.title}
-                  goal={habit.frequency || "Daily"}
+                  goal={getFrequencyLabel(habit.frequency)}
                   icon={icon as any}   
                   color={color} 
                   completed={habit.isComplete}
-                  onToggle={() => toggleHabitStatus(habit.id, habit.isComplete)}
+                  onToggle={() => toggleHabitStatus(habit.id!, habit.isComplete)}
                 />
               );
             })
@@ -116,10 +135,9 @@ const HomeScreen = () => {
         </View>
       </ScrollView>
 
-      {/* FAB */}
       <TouchableOpacity 
         className="absolute bottom-6 right-6 w-16 h-16 bg-[#818CF8] rounded-2xl items-center justify-center shadow-lg z-50"
-        onPress={() => router.push('/create-habit/step1')}
+        onPress={() => router.push('/create-habit/step1' as any)}
         activeOpacity={0.8}
       >
         <Ionicons name="add" size={32} color="white" />
