@@ -13,7 +13,6 @@ const RootLayout = () => {
     <LoaderProvider>
       <AuthProvider>
         <View className="flex-1" style={{ marginBottom: 10 }}>
-          {/* Slot renders the currently active screen */}
           <Slot />
         </View>
         <Toast />

@@ -1,8 +1,9 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { BlurView } from "expo-blur";
 import { Tabs, useNavigation } from "expo-router";
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 const tabs = [
   { name: "home", title: "Today", icon: "calendar-check" },
@@ -18,11 +19,45 @@ const TabsLayout = () => {
     <Tabs
       screenOptions={{
         headerShown: true,
-        tabBarActiveTintColor: "#818CF8",
+
+        tabBarActiveTintColor: "#9333EA",
+        tabBarInactiveTintColor: "#6B7280",
+        tabBarShowLabel: true,
+
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "600",
+          marginTop: 2,
         },
+
+        tabBarStyle: {
+          left: 20,
+          right: 20,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          borderTopWidth: 0,
+          elevation: 5,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.1,
+          shadowRadius: 10,
+          backgroundColor: "transparent",
+          paddingTop: 10,
+          paddingBottom: 10,
+          height: 75,
+        },
+
+        tabBarItemStyle: {
+          paddingVertical: 5,
+        },
+
+        tabBarBackground: () => (
+          <BlurView
+            tint="light"
+            intensity={80}
+            style={StyleSheet.absoluteFill}
+          />
+        ),
         headerLeft: () => (
           <TouchableOpacity
             onPress={() => navigation.openDrawer()}
@@ -39,8 +74,19 @@ const TabsLayout = () => {
           name={name}
           options={{
             title: title,
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome5 name={icon} color={color} size={size} />
+            tabBarIcon: ({ color, size, focused }) => (
+              <View
+                style={{
+                  backgroundColor: focused ? "#9333EA20" : "transparent",
+                  borderRadius: 24,
+                  width: 64,
+                  height: 34,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <FontAwesome5 name={icon} color={color} size={24} />
+              </View>
             ),
           }}
         />
