@@ -131,7 +131,7 @@ const Reminders = () => {
           onPress: () => {
             resetForm();
             if (router.canDismiss()) router.dismissAll();
-            router.replace('/(dashboard)/(tabs)/home'); 
+            router.replace('/(drawer)/(tabs)/home'); 
           }
         }
       ]);

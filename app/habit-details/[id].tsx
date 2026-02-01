@@ -44,7 +44,7 @@ const HabitDetailScreen = () => {
     <SafeAreaView className="flex-1 bg-[#121212]">
       <View className="px-4 py-2 flex-row items-center justify-between">
         <TouchableOpacity
-          onPress={() => router.replace("/(dashboard)/(tabs)/habits")}
+          onPress={() => router.replace("/(drawer)/(tabs)/habits")}
           className="p-2"
         >
           <Ionicons name="chevron-back" size={24} color="#8B5CF6" />

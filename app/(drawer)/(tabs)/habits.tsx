@@ -21,21 +21,6 @@ const Habits = () => {
   return (
     <SafeAreaView className="flex-1 bg-[#121212]">
       <View className="flex-1 px-4">
-        
-        {/* Header Section */}
-        <View className="flex-row justify-between items-center py-4 mb-2">
-            <View className="flex-row items-center">
-                <Text className="text-white text-3xl font-bold">Habits</Text>
-            </View>
-            <View className="flex-row space-x-3">
-                <TouchableOpacity className="bg-gray-800 p-2 rounded-full">
-                    <Ionicons name="search" size={20} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity className="bg-gray-800 p-2 rounded-full">
-                    <Ionicons name="filter" size={20} color="white" />
-                </TouchableOpacity>
-            </View>
-        </View>
 
         {/* Habits List */}
         {isLoading && habits.length === 0 ? (

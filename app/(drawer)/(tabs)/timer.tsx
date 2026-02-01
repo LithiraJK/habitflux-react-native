@@ -228,16 +228,7 @@ const Timer = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-[#121212]">
-      <View className="flex-row justify-between items-center px-6 py-4">
-        <TouchableOpacity>
-          <Ionicons name="information-circle-outline" size={24} color="gray" />
-        </TouchableOpacity>
-        <Text className="text-white text-lg font-bold">Timer</Text>
-        <TouchableOpacity>
-          <Ionicons name="volume-high-outline" size={24} color="gray" />
-        </TouchableOpacity>
-      </View>
-
+      
       <View className="flex-1 justify-center">{renderContent()}</View>
 
       <View className="items-center mb-10">
@@ -284,7 +275,7 @@ const Timer = () => {
         )}
       </View>
 
-      <View className="bg-[#1C1C1E] mx-4 mb-4 p-1 rounded-2xl flex-row ">
+      <View className="bg-[#1C1C1E] mx-4 mb-10 p-1 rounded-2xl flex-row ">
         {(["Stopwatch", "Countdown", "Intervals"] as TimerMode[]).map((tab) => (
           <TouchableOpacity
             key={tab}
