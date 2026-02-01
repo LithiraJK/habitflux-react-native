@@ -212,6 +212,8 @@ export const deleteHabit = async (id: string) => {
 };
 
 
+
+
 export const getHabitCounts = async () => {
   const habits = await getAllHabit();
   const completedCount = habits.filter((habit) => habit.isComplete).length;
