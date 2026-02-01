@@ -1,8 +1,8 @@
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
+import { showToast } from "@/utils/notifications";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -25,13 +25,14 @@ const DefineHabit = () => {
 
   const handleNext = () => {
     if (!title.trim()) {
-      Alert.alert("Missing Information", "Please enter a habit name.");
+      showToast("error", "Missing Information", "Please enter a habit name.");
       return;
     }
 
     if (habitData.type !== "yes_no") {
       if (!targetValue || isNaN(Number(targetValue))) {
-        Alert.alert(
+        showToast(
+          "error",
           "Missing Information",
           "Please enter a valid daily target.",
         );
@@ -40,12 +41,17 @@ const DefineHabit = () => {
 
       const numericTarget = Number(targetValue);
       if (numericTarget <= 0) {
-        Alert.alert("Invalid Target", "Daily target must be greater than 0.");
+        showToast(
+          "error",
+          "Invalid Target",
+          "Daily target must be greater than 0.",
+        );
         return;
       }
 
       if (habitData.type === "count" && !unit.trim()) {
-        Alert.alert(
+        showToast(
+          "error",
           "Missing Information",
           "Please enter a unit (e.g., ml, pages, reps).",
         );

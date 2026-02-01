@@ -1,40 +1,38 @@
-import {
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Pressable,
-  TextInput,
-  Keyboard,
-  Alert,
-} from "react-native";
-import React, { useState } from "react";
-import { useRouter } from "expo-router";
 import { useLoader } from "@/hooks/useLoader";
 import { login } from "@/services/authService";
+import { showToast } from "@/utils/notifications";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  Keyboard,
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { showLoader, hideLoader , isLoading } = useLoader();
+  const { showLoader, hideLoader, isLoading } = useLoader();
 
   const handleLogin = async () => {
-    if (!email || !password || isLoading ) {
-      Alert.alert("Error", "Please enter email and password");
+    if (!email || !password || isLoading) {
+      showToast("error", "Error", "Please enter email and password");
       return;
     }
     try {
-      showLoader()
+      showLoader();
       await login(email, password);
       router.replace("/home");
     } catch (error) {
-      console.error(error)
-      Alert.alert("Login Failed", "Invalid email or password");
-      
-    }finally{
-      hideLoader()
+      showToast("error", "Login Failed", "Invalid email or password");
+    } finally {
+      hideLoader();
     }
   };
 

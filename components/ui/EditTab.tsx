@@ -1,17 +1,17 @@
 import { Habit, deleteHabit, updateHabit } from "@/services/habitService";
 import { useCategoryStore } from "@/store/useCategoryStore";
+import { showConfirmation, showToast } from "@/utils/notifications";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-    Alert,
     ScrollView,
     Switch,
     Text,
     TextInput,
     TouchableOpacity,
-    View
+    View,
 } from "react-native";
 
 interface EditTabProps {
@@ -42,7 +42,6 @@ const EditTab = ({ habit }: EditTabProps) => {
   );
   const [isEndDateEnabled, setIsEndDateEnabled] = useState(!!habit.endDate);
 
-
   const handleSave = async () => {
     try {
       if (!habit.id) return;
@@ -57,11 +56,11 @@ const EditTab = ({ habit }: EditTabProps) => {
 
       await updateHabit(habit.id, updates);
 
-      Alert.alert("Success", "Habit updated successfully!");
+      showToast("success", "Success", "Habit updated successfully!");
       router.back();
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Failed to update habit");
+      showToast("error", "Error", "Failed to update habit");
     }
   };
 
@@ -76,26 +75,21 @@ const EditTab = ({ habit }: EditTabProps) => {
   };
 
   const handleDelete = () => {
-    Alert.alert(
+    showConfirmation(
       "Delete Habit",
       "Are you sure you want to delete this habit? This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              if (habit.id) {
-                await deleteHabit(habit.id);
-                router.replace("/(drawer)/(tabs)/habits");
-              }
-            } catch (error) {
-              Alert.alert("Error", "Failed to delete habit");
-            }
-          },
-        },
-      ],
+      async () => {
+        try {
+          if (habit.id) {
+            await deleteHabit(habit.id);
+            router.replace("/(drawer)/(tabs)/habits");
+          }
+        } catch (error) {
+          showToast("error", "Error", "Failed to delete habit");
+        }
+      },
+      "Delete",
+      true,
     );
   };
 
@@ -106,7 +100,6 @@ const EditTab = ({ habit }: EditTabProps) => {
     setPriority(priorities[nextIndex]);
   };
 
-
   const onStartDateChange = (event: any, selectedDate?: Date) => {
     setShowStartPicker(false);
     if (selectedDate) setStartDate(selectedDate);
@@ -116,7 +109,6 @@ const EditTab = ({ habit }: EditTabProps) => {
     setShowEndPicker(false);
     if (selectedDate) setEndDate(selectedDate);
   };
-
 
   const formatDate = (date: Date) => date.toISOString().split("T")[0];
 

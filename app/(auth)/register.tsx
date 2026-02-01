@@ -1,9 +1,9 @@
 import { useLoader } from "@/hooks/useLoader";
 import { registerUser } from "@/services/authService";
+import { showToast } from "@/utils/notifications";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-  Alert,
   Keyboard,
   Pressable,
   Text,
@@ -28,35 +28,38 @@ const Register = () => {
       return;
     }
     if (!name || !email || !password) {
-      Alert.alert("Error", "Please fill all the fields");
+      showToast("error", "Error", "Please fill all the fields");
       return;
     }
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert("Error", "Please enter a valid email address");
+      showToast("error", "Error", "Please enter a valid email address");
       return;
     }
 
     // Password validation
     if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters long");
+      showToast(
+        "error",
+        "Error",
+        "Password must be at least 6 characters long",
+      );
       return;
     }
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+      showToast("error", "Error", "Passwords do not match");
       return;
     }
 
     try {
       showLoader();
       await registerUser(name, email, password);
-      Alert.alert("Success", "Registration Successful");
+      showToast("success", "Success", "Registration Successful");
       router.replace("/login");
     } catch (error: any) {
-      console.error("Registration error:", error);
       const errorMessage = error.message || "An unknown error occurred";
-      Alert.alert("Registration Failed", errorMessage);
+      showToast("error", "Registration Failed", errorMessage);
     } finally {
       hideLoader();
     }

@@ -50,8 +50,18 @@ npm install react-native-calendars
 ```bash
 npm install react-native-svg
 ```
------------------------------------------
+#### Toast notifications
 
+```bash
+npx expo install react-native-toast-message
+```
+
+#### Notifications support
+
+```bash
+npx expo install expo-notifications
+```
+-----------------------------------------
 
 ## 🏃 Running the Application
 
