@@ -1,4 +1,5 @@
 import GlassCard from "@/components/ui/GlassCard";
+import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
@@ -18,7 +19,7 @@ const HabitItem = ({
   title,
   goal,
   icon = "leaf",
-  color = "#0891B2",
+  color = Colors.dark.defaultCategory,
   completed,
   disabled = false,
   onToggle,
@@ -35,11 +36,17 @@ const HabitItem = ({
           </View>
 
           <View className="flex-1">
-            <Text className="text-white font-bold text-lg truncate">
+            <Text
+              style={{ color: Colors.dark.text }}
+              className="font-bold text-lg truncate"
+            >
               {title}
             </Text>
             {goal && (
-              <Text className="text-gray-300 text-xs font-medium mt-0.5">
+              <Text
+                style={{ color: Colors.dark.textTertiary }}
+                className="text-xs font-medium mt-0.5"
+              >
                 Goal: {goal}
               </Text>
             )}

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { useCategoryStore } from "@/store/useCategoryStore";
 import CreateCategorySheet from "@/components/ui/CreateCategorySheet";
+import { Colors } from "@/constants/theme";
+import { useCategoryStore } from "@/store/useCategoryStore";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const CategorySelection = () => {
   const router = useRouter();
@@ -19,8 +20,14 @@ const CategorySelection = () => {
   };
 
   return (
-    <View className="flex-1 bg-[#121212] px-4 pt-6">
-      <Text className="text-[#0891B2] text-xl font-bold text-center mb-8 mt-4">
+    <View
+      className="flex-1 px-4 pt-6"
+      style={{ backgroundColor: Colors.dark.background }}
+    >
+      <Text
+        className="text-xl font-bold text-center mb-8 mt-4"
+        style={{ color: Colors.dark.primary }}
+      >
         Select a category for your habit
       </Text>
 
@@ -34,7 +41,8 @@ const CategorySelection = () => {
               className="bg-[rgba(255,255,255,0.8)] w-[48%] px-4 py-4 rounded-2xl mb-2 flex-row justify-between items-center"
             >
               <Text
-                className="text-white font-bold text-sm flex-1 mr-2"
+                className="font-bold text-sm flex-1 mr-2"
+                style={{ color: Colors.dark.text }}
                 numberOfLines={1}
               >
                 {item.title}
@@ -56,19 +64,36 @@ const CategorySelection = () => {
           <TouchableOpacity
             onPress={() => setShowSheet(true)}
             activeOpacity={0.7}
-            className="bg-[rgba(255,255,255,0.8)] w-[48%] px-4 py-4 rounded-2xl mb-2 flex-row justify-between items-center border border-[#0891B2]/30"
+            className="bg-[rgba(255,255,255,0.8)] w-[48%] px-4 py-4 rounded-2xl mb-2 flex-row justify-between items-center"
+            style={{
+              borderWidth: 1,
+              borderColor: Colors.dark.defaultCategory + "4D",
+            }}
           >
             <View>
-              <Text className="text-white font-bold text-sm">
+              <Text
+                className="font-bold text-sm"
+                style={{ color: Colors.dark.text }}
+              >
                 Create category
               </Text>
-              <Text className="text-gray-500 text-[10px] mt-0.5">
+              <Text
+                className="text-[10px] mt-0.5"
+                style={{ color: Colors.dark.textSecondary }}
+              >
                 {categories.length} available
               </Text>
             </View>
 
-            <View className="w-10 h-10 rounded-full border-2 border-gray-600 items-center justify-center">
-              <Ionicons name="add" size={24} color="gray" />
+            <View
+              className="w-10 h-10 rounded-full border-2 items-center justify-center"
+              style={{ borderColor: Colors.dark.border }}
+            >
+              <Ionicons
+                name="add"
+                size={24}
+                color={Colors.dark.textSecondary}
+              />
             </View>
           </TouchableOpacity>
         </View>

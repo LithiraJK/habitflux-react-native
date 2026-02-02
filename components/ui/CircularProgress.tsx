@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
@@ -18,7 +19,7 @@ const CircularProgress = ({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#333"
+          stroke={Colors.dark.border}
           strokeWidth={strokeWidth}
           fill="transparent"
         />
@@ -27,7 +28,7 @@ const CircularProgress = ({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#8B5CF6"
+          stroke={Colors.dark.primary}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}

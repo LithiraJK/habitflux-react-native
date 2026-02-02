@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
 import { showToast } from "@/utils/notifications";
 import { useRouter } from "expo-router";
@@ -53,8 +54,14 @@ const Frequency = () => {
   };
 
   return (
-    <View className="flex-1 bg-[#121212] p-6">
-      <Text className="text-[#0891B2] text-xl font-bold text-center mt-10 mb-10">
+    <View
+      className="flex-1 p-6"
+      style={{ backgroundColor: Colors.dark.background }}
+    >
+      <Text
+        className="text-xl font-bold text-center mt-10 mb-10"
+        style={{ color: Colors.dark.primary }}
+      >
         How often do you want to do it?
       </Text>
 
@@ -67,16 +74,30 @@ const Frequency = () => {
               activeOpacity={0.7}
             >
               <View
-                className={`w-6 h-6 rounded-full border-2 items-center justify-center mr-4 
-                        ${selectedOption === freq ? "border-[#0891B2]" : "border-gray-500"}`}
+                className="w-6 h-6 rounded-full border-2 items-center justify-center mr-4"
+                style={{
+                  borderColor:
+                    selectedOption === freq
+                      ? Colors.dark.primary
+                      : Colors.dark.textSecondary,
+                }}
               >
                 {selectedOption === freq && (
-                  <View className="w-3 h-3 rounded-full bg-[#0891B2]" />
+                  <View
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: Colors.dark.primary }}
+                  />
                 )}
               </View>
 
               <Text
-                className={`text-base font-medium ${selectedOption === freq ? "text-white" : "text-gray-400"}`}
+                className="text-base font-medium"
+                style={{
+                  color:
+                    selectedOption === freq
+                      ? Colors.dark.text
+                      : Colors.dark.textSecondary,
+                }}
               >
                 {freq}
               </Text>
@@ -92,11 +113,24 @@ const Frequency = () => {
                       <TouchableOpacity
                         key={index}
                         onPress={() => toggleDay(index)}
-                        className={`w-9 h-9 rounded-full items-center justify-center border 
-                                    ${isSelected ? "bg-[#0891B2] border-[#0891B2]" : "border-gray-600 bg-transparent"}`}
+                        className="w-9 h-9 rounded-full items-center justify-center"
+                        style={{
+                          backgroundColor: isSelected
+                            ? Colors.dark.primary
+                            : "transparent",
+                          borderWidth: 1,
+                          borderColor: isSelected
+                            ? Colors.dark.primary
+                            : Colors.dark.border,
+                        }}
                       >
                         <Text
-                          className={`font-bold ${isSelected ? "text-white" : "text-gray-400"}`}
+                          className="font-bold"
+                          style={{
+                            color: isSelected
+                              ? Colors.dark.text
+                              : Colors.dark.textSecondary,
+                          }}
                         >
                           {day}
                         </Text>
@@ -111,20 +145,45 @@ const Frequency = () => {
 
       <View className="mt-auto flex-row justify-between items-center mb-6">
         <TouchableOpacity onPress={() => router.back()}>
-          <Text className="text-gray-400 font-bold text-base">BACK</Text>
+          <Text
+            className="font-bold text-base"
+            style={{ color: Colors.dark.textSecondary }}
+          >
+            BACK
+          </Text>
         </TouchableOpacity>
 
         {/* Pagination Dots */}
         <View className="flex-row space-x-2">
-          <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 m-1 h-2 rounded-full bg-[#0891B2]" />
-          <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
+          <View
+            className="w-2 m-1 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.disabled }}
+          />
+          <View
+            className="w-2 m-1 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.disabled }}
+          />
+          <View
+            className="w-2 m-1 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.disabled }}
+          />
+          <View
+            className="w-2 m-1 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.primary }}
+          />
+          <View
+            className="w-2 m-1 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.disabled }}
+          />
         </View>
 
         <TouchableOpacity onPress={handleNext}>
-          <Text className="text-[#0891B2] font-bold text-base">NEXT</Text>
+          <Text
+            className="font-bold text-base"
+            style={{ color: Colors.dark.primary }}
+          >
+            NEXT
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { BlurView } from "expo-blur";
@@ -20,8 +21,8 @@ const TabsLayout = () => {
       screenOptions={{
         headerShown: true,
 
-        tabBarActiveTintColor: "#9333EA",
-        tabBarInactiveTintColor: "#6B7280",
+        tabBarActiveTintColor: Colors.dark.primary,
+        tabBarInactiveTintColor: Colors.dark.textTertiary,
         tabBarShowLabel: true,
 
         tabBarLabelStyle: {
@@ -63,7 +64,7 @@ const TabsLayout = () => {
             onPress={() => navigation.openDrawer()}
             style={{ marginLeft: 16 }}
           >
-            <Ionicons name="menu" size={28} color="#818CF8" />
+            <Ionicons name="menu" size={28} color={Colors.dark.primary} />
           </TouchableOpacity>
         ),
       }}
@@ -77,7 +78,9 @@ const TabsLayout = () => {
             tabBarIcon: ({ color, size, focused }) => (
               <View
                 style={{
-                  backgroundColor: focused ? "#9333EA20" : "transparent",
+                  backgroundColor: focused
+                    ? `${Colors.dark.primary}20`
+                    : "transparent",
                   borderRadius: 24,
                   width: 64,
                   height: 34,

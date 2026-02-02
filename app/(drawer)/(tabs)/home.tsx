@@ -1,3 +1,10 @@
+import CalendarStrip from "@/components/ui/CalendarStrip";
+import HabitItem from "@/components/ui/HabitItem";
+import ProgressRing from "@/components/ui/ProgressRing";
+import { Colors } from "@/constants/theme";
+import { Habit } from "@/services/habitService";
+import { useCategoryStore } from "@/store/useCategoryStore";
+import { useHabitStore } from "@/store/useHabitStore";
 import { Ionicons } from "@expo/vector-icons";
 import { format, isAfter, startOfDay } from "date-fns";
 import { router, useFocusEffect } from "expo-router";
@@ -10,12 +17,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import CalendarStrip from "@/components/ui/CalendarStrip";
-import HabitItem from "@/components/ui/HabitItem";
-import ProgressRing from "@/components/ui/ProgressRing";
-import { Habit } from "@/services/habitService";
-import { useCategoryStore } from "@/store/useCategoryStore";
-import { useHabitStore } from "@/store/useHabitStore";
 
 const HomeScreen = () => {
   const {
@@ -61,7 +62,8 @@ const HomeScreen = () => {
   }, [selectedDate]);
 
   const getHabitStyle = (categoryId: string | undefined) => {
-    if (!categoryId) return { icon: "leaf", color: "#818CF8" };
+    if (!categoryId)
+      return { icon: "leaf", color: Colors.dark.defaultCategory };
 
     const foundCategory = allCategories.find((cat) => cat.id === categoryId);
 
@@ -72,7 +74,7 @@ const HomeScreen = () => {
       };
     }
 
-    return { icon: "leaf", color: "#818CF8" };
+    return { icon: "leaf", color: Colors.dark.defaultCategory };
   };
 
   const getFrequencyLabel = (frequency: Habit["frequency"]) => {
@@ -90,7 +92,7 @@ const HomeScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-[#121212]">
+    <View style={{ flex: 1, backgroundColor: Colors.dark.background }}>
       <View className="px-4 h-[100px] justify-center z-10">
         <CalendarStrip />
       </View>
@@ -106,12 +108,15 @@ const HomeScreen = () => {
               fetchHabits();
               fetchCategories();
             }}
-            tintColor="#0891B2"
+            tintColor={Colors.dark.defaultCategory}
           />
         }
       >
         <View className="pt-2 pb-1">
-          <Text className="text-gray-400 text-xs font-medium uppercase tracking-widest">
+          <Text
+            style={{ color: Colors.dark.textSecondary }}
+            className="text-xs font-medium uppercase tracking-widest"
+          >
             {format(selectedDate, "EEEE, d MMMM")}
           </Text>
         </View>
@@ -122,14 +127,30 @@ const HomeScreen = () => {
 
         <View className="flex-1">
           {isHabitLoading && filteredHabits.length === 0 ? (
-            <ActivityIndicator size="large" color="#818CF8" className="mt-10" />
+            <ActivityIndicator
+              size="large"
+              color={Colors.dark.primary}
+              className="mt-10"
+            />
           ) : filteredHabits.length === 0 ? (
             <View className="items-center mt-10 opacity-50">
-              <Ionicons name="list" size={48} color="gray" />
-              <Text className="text-gray-400 mt-2">
+              <Ionicons
+                name="list"
+                size={48}
+                color={Colors.dark.textSecondary}
+              />
+              <Text
+                style={{ color: Colors.dark.textSecondary }}
+                className="mt-2"
+              >
                 No habits for this date
               </Text>
-              <Text className="text-gray-600 text-xs">Tap + to add one</Text>
+              <Text
+                style={{ color: Colors.dark.textTertiary }}
+                className="text-xs"
+              >
+                Tap + to add one
+              </Text>
             </View>
           ) : (
             filteredHabits.map((habit) => {
@@ -155,11 +176,12 @@ const HomeScreen = () => {
       </ScrollView>
 
       <TouchableOpacity
-        className="absolute bottom-6 right-6 w-16 h-16 bg-[#818CF8] rounded-2xl items-center justify-center shadow-lg z-50"
+        style={{ backgroundColor: Colors.dark.primary }}
+        className="absolute bottom-6 right-6 w-16 h-16 rounded-2xl items-center justify-center shadow-lg z-50"
         onPress={() => router.push("/create-habit/step1" as any)}
         activeOpacity={0.8}
       >
-        <Ionicons name="add" size={32} color="white" />
+        <Ionicons name="add" size={32} color={Colors.dark.text} />
       </TouchableOpacity>
     </View>
   );

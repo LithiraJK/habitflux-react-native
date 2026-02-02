@@ -1,4 +1,5 @@
 import CircularProgress from "@/components/ui/CircularProgress";
+import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useRef, useState } from "react";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
@@ -113,10 +114,18 @@ const Timer = () => {
       return (
         <View className="items-center justify-center flex-1">
           <CircularProgress progress={0} size={280}>
-            <Text className="text-white text-6xl font-bold font-monospaced">
+            <Text
+              style={{ color: Colors.dark.text }}
+              className="text-6xl font-bold font-monospaced"
+            >
               {formatTime(swTime)}
             </Text>
-            <Text className="text-gray-500 text-lg mt-2">Stopwatch</Text>
+            <Text
+              style={{ color: Colors.dark.textTertiary }}
+              className="text-lg mt-2"
+            >
+              Stopwatch
+            </Text>
           </CircularProgress>
         </View>
       );
@@ -128,56 +137,123 @@ const Timer = () => {
           <View className="items-center justify-center flex-1 w-full">
             <View className="flex-row items-center justify-center space-x-4 mb-10">
               <View className="items-center">
-                <Text className="text-gray-500 mb-2">Hours</Text>
-                <View className="bg-[#1C1C1E] p-4 rounded-xl items-center w-20">
+                <Text
+                  style={{ color: Colors.dark.textTertiary }}
+                  className="mb-2"
+                >
+                  Hours
+                </Text>
+                <View
+                  style={{ backgroundColor: Colors.dark.cardBackground }}
+                  className="p-4 rounded-xl items-center w-20"
+                >
                   <TouchableOpacity onPress={() => setHours((h) => h + 1)}>
-                    <Ionicons name="chevron-up" color="gray" size={24} />
+                    <Ionicons
+                      name="chevron-up"
+                      color={Colors.dark.textSecondary}
+                      size={24}
+                    />
                   </TouchableOpacity>
-                  <Text className="text-white text-3xl font-bold my-2">
+                  <Text
+                    style={{ color: Colors.dark.text }}
+                    className="text-3xl font-bold my-2"
+                  >
                     {hours.toString().padStart(2, "0")}
                   </Text>
                   <TouchableOpacity
                     onPress={() => setHours((h) => Math.max(0, h - 1))}
                   >
-                    <Ionicons name="chevron-down" color="gray" size={24} />
+                    <Ionicons
+                      name="chevron-down"
+                      color={Colors.dark.textSecondary}
+                      size={24}
+                    />
                   </TouchableOpacity>
                 </View>
               </View>
-              <Text className="text-white text-3xl mt-6">:</Text>
+              <Text
+                style={{ color: Colors.dark.text }}
+                className="text-3xl mt-6"
+              >
+                :
+              </Text>
               <View className="items-center">
-                <Text className="text-gray-500 mb-2">Minutes</Text>
-                <View className="bg-[#1C1C1E] p-4 rounded-xl items-center w-20">
+                <Text
+                  style={{ color: Colors.dark.textTertiary }}
+                  className="mb-2"
+                >
+                  Minutes
+                </Text>
+                <View
+                  style={{ backgroundColor: Colors.dark.cardBackground }}
+                  className="p-4 rounded-xl items-center w-20"
+                >
                   <TouchableOpacity
                     onPress={() => setMinutes((m) => (m >= 59 ? 0 : m + 1))}
                   >
-                    <Ionicons name="chevron-up" color="gray" size={24} />
+                    <Ionicons
+                      name="chevron-up"
+                      color={Colors.dark.textSecondary}
+                      size={24}
+                    />
                   </TouchableOpacity>
-                  <Text className="text-white text-3xl font-bold my-2">
+                  <Text
+                    style={{ color: Colors.dark.text }}
+                    className="text-3xl font-bold my-2"
+                  >
                     {minutes.toString().padStart(2, "0")}
                   </Text>
                   <TouchableOpacity
                     onPress={() => setMinutes((m) => (m <= 0 ? 59 : m - 1))}
                   >
-                    <Ionicons name="chevron-down" color="gray" size={24} />
+                    <Ionicons
+                      name="chevron-down"
+                      color={Colors.dark.textSecondary}
+                      size={24}
+                    />
                   </TouchableOpacity>
                 </View>
               </View>
-              <Text className="text-white text-3xl mt-6">:</Text>
+              <Text
+                style={{ color: Colors.dark.text }}
+                className="text-3xl mt-6"
+              >
+                :
+              </Text>
               <View className="items-center">
-                <Text className="text-gray-500 mb-2">Seconds</Text>
-                <View className="bg-[#1C1C1E] p-4 rounded-xl items-center w-20">
+                <Text
+                  style={{ color: Colors.dark.textTertiary }}
+                  className="mb-2"
+                >
+                  Seconds
+                </Text>
+                <View
+                  style={{ backgroundColor: Colors.dark.cardBackground }}
+                  className="p-4 rounded-xl items-center w-20"
+                >
                   <TouchableOpacity
                     onPress={() => setSeconds((s) => (s >= 59 ? 0 : s + 1))}
                   >
-                    <Ionicons name="chevron-up" color="gray" size={24} />
+                    <Ionicons
+                      name="chevron-up"
+                      color={Colors.dark.textSecondary}
+                      size={24}
+                    />
                   </TouchableOpacity>
-                  <Text className="text-white text-3xl font-bold my-2">
+                  <Text
+                    style={{ color: Colors.dark.text }}
+                    className="text-3xl font-bold my-2"
+                  >
                     {seconds.toString().padStart(2, "0")}
                   </Text>
                   <TouchableOpacity
                     onPress={() => setSeconds((s) => (s <= 0 ? 59 : s - 1))}
                   >
-                    <Ionicons name="chevron-down" color="gray" size={24} />
+                    <Ionicons
+                      name="chevron-down"
+                      color={Colors.dark.textSecondary}
+                      size={24}
+                    />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -189,10 +265,18 @@ const Timer = () => {
         return (
           <View className="items-center justify-center flex-1">
             <CircularProgress progress={progress} size={280}>
-              <Text className="text-white text-6xl font-bold font-monospaced">
+              <Text
+                style={{ color: Colors.dark.text }}
+                className="text-6xl font-bold font-monospaced"
+              >
                 {formatTime(cdTime)}
               </Text>
-              <Text className="text-gray-500 text-lg mt-2">Remaining</Text>
+              <Text
+                style={{ color: Colors.dark.textTertiary }}
+                className="text-lg mt-2"
+              >
+                Remaining
+              </Text>
             </CircularProgress>
           </View>
         );
@@ -207,15 +291,33 @@ const Timer = () => {
         <View className="items-center justify-center flex-1">
           <CircularProgress progress={progress} size={280}>
             <Text
-              className={`text-6xl font-bold font-monospaced ${pomoState === "Work" ? "text-[#8B5CF6]" : "text-[#22C55E]"}`}
+              style={{
+                color:
+                  pomoState === "Work"
+                    ? Colors.dark.primary
+                    : Colors.dark.success,
+              }}
+              className="text-6xl font-bold font-monospaced"
             >
               {formatTime(pomoTime)}
             </Text>
             <View
-              className={`px-4 py-1 rounded-full mt-2 ${pomoState === "Work" ? "bg-[#8B5CF6]/20" : "bg-[#22C55E]/20"}`}
+              style={{
+                backgroundColor:
+                  pomoState === "Work"
+                    ? `${Colors.dark.primary}20`
+                    : `${Colors.dark.success}20`,
+              }}
+              className="px-4 py-1 rounded-full mt-2"
             >
               <Text
-                className={`text-base font-bold ${pomoState === "Work" ? "text-[#8B5CF6]" : "text-[#22C55E]"}`}
+                style={{
+                  color:
+                    pomoState === "Work"
+                      ? Colors.dark.primary
+                      : Colors.dark.success,
+                }}
+                className="text-base font-bold"
               >
                 {pomoState === "Work" ? "🔥 Focus Time" : "☕ Break Time"}
               </Text>
@@ -227,8 +329,7 @@ const Timer = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#121212]">
-      
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.dark.background }}>
       <View className="flex-1 justify-center">{renderContent()}</View>
 
       <View className="items-center mb-10">
@@ -236,29 +337,45 @@ const Timer = () => {
           <TouchableOpacity
             onPress={handlePause}
             activeOpacity={0.8}
-            className="flex-row items-center px-10 py-4 rounded-2xl bg-[#2C2C2E]"
+            style={{ backgroundColor: Colors.dark.cardBackgroundSecondary }}
+            className="flex-row items-center px-10 py-4 rounded-2xl"
           >
-            <Ionicons name="pause" size={24} color="#8B5CF6" />
-            <Text className="ml-2 text-lg font-bold text-[#8B5CF6]">PAUSE</Text>
+            <Ionicons name="pause" size={24} color={Colors.dark.primary} />
+            <Text
+              style={{ color: Colors.dark.primary }}
+              className="ml-2 text-lg font-bold"
+            >
+              PAUSE
+            </Text>
           </TouchableOpacity>
         ) : hasStarted() ? (
           <View className="flex-row space-x-4">
             <TouchableOpacity
               onPress={handleStart}
               activeOpacity={0.8}
-              className="flex-row items-center mx-2 px-8 py-4 rounded-2xl bg-[#8B5CF6]"
+              style={{ backgroundColor: Colors.dark.primary }}
+              className="flex-row items-center mx-2 px-8 py-4 rounded-2xl"
             >
-              <Ionicons name="play" size={24} color="white" />
-              <Text className="mx-2 text-lg font-bold text-white">RESUME</Text>
+              <Ionicons name="play" size={24} color={Colors.dark.text} />
+              <Text
+                style={{ color: Colors.dark.text }}
+                className="mx-2 text-lg font-bold"
+              >
+                RESUME
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={handleStop}
               activeOpacity={0.8}
-              className="flex-row items-center mx-2 px-8 py-4 rounded-2xl bg-[#2C2C2E]"
+              style={{ backgroundColor: Colors.dark.cardBackgroundSecondary }}
+              className="flex-row items-center mx-2 px-8 py-4 rounded-2xl"
             >
-              <Ionicons name="stop" size={24} color="#8B5CF6" />
-              <Text className="mx-2 text-lg font-bold text-[#8B5CF6]">
+              <Ionicons name="stop" size={24} color={Colors.dark.primary} />
+              <Text
+                style={{ color: Colors.dark.primary }}
+                className="mx-2 text-lg font-bold"
+              >
                 STOP
               </Text>
             </TouchableOpacity>
@@ -267,15 +384,24 @@ const Timer = () => {
           <TouchableOpacity
             onPress={handleStart}
             activeOpacity={0.8}
-            className="flex-row items-center px-10 py-4 rounded-2xl bg-[#8B5CF6]"
+            style={{ backgroundColor: Colors.dark.primary }}
+            className="flex-row items-center px-10 py-4 rounded-2xl"
           >
-            <Ionicons name="play" size={24} color="white" />
-            <Text className="ml-2 text-lg font-bold text-white">START</Text>
+            <Ionicons name="play" size={24} color={Colors.dark.text} />
+            <Text
+              style={{ color: Colors.dark.text }}
+              className="ml-2 text-lg font-bold"
+            >
+              START
+            </Text>
           </TouchableOpacity>
         )}
       </View>
 
-      <View className="bg-[#1C1C1E] mx-4 mb-10 p-1 rounded-2xl flex-row ">
+      <View
+        style={{ backgroundColor: Colors.dark.cardBackground }}
+        className="mx-4 mb-10 p-1 rounded-2xl flex-row "
+      >
         {(["Stopwatch", "Countdown", "Intervals"] as TimerMode[]).map((tab) => (
           <TouchableOpacity
             key={tab}
@@ -283,7 +409,13 @@ const Timer = () => {
               setMode(tab);
               handleStop();
             }}
-            className={`flex-1 py-3 rounded-xl items-center justify-center ${mode === tab ? "bg-[#2C2C2E]" : "transparent"}`}
+            style={{
+              backgroundColor:
+                mode === tab
+                  ? Colors.dark.cardBackgroundSecondary
+                  : "transparent",
+            }}
+            className="flex-1 py-3 rounded-xl items-center justify-center"
           >
             <Ionicons
               name={
@@ -294,10 +426,16 @@ const Timer = () => {
                     : "infinite-outline"
               }
               size={20}
-              color={mode === tab ? "#8B5CF6" : "gray"}
+              color={
+                mode === tab ? Colors.dark.primary : Colors.dark.textSecondary
+              }
             />
             <Text
-              className={`text-xs mt-1 font-medium ${mode === tab ? "text-[#8B5CF6]" : "text-gray-500"}`}
+              style={{
+                color:
+                  mode === tab ? Colors.dark.primary : Colors.dark.textTertiary,
+              }}
+              className="text-xs mt-1 font-medium"
             >
               {tab}
             </Text>

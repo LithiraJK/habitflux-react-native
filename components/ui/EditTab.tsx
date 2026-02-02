@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { Habit, deleteHabit, updateHabit } from "@/services/habitService";
 import { useCategoryStore } from "@/store/useCategoryStore";
 import { showConfirmation, showToast } from "@/utils/notifications";
@@ -116,22 +117,39 @@ const EditTab = ({ habit }: EditTabProps) => {
     <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
       <View className="mt-4 pb-20">
         <View className="flex-row items-center py-4 border-b border-gray-800">
-          <Ionicons name="pencil-outline" size={22} color="#8B5CF6" />
+          <Ionicons
+            name="pencil-outline"
+            size={22}
+            color={Colors.dark.primary}
+          />
           <TextInput
             value={title}
             onChangeText={setTitle}
             placeholder="Habit Name"
-            placeholderTextColor="#666"
-            className="flex-1 ml-4 text-white text-base font-bold"
+            placeholderTextColor={Colors.dark.textTertiary}
+            style={{ color: Colors.dark.text }}
+            className="flex-1 ml-4 text-base font-bold"
           />
         </View>
 
         <TouchableOpacity className="flex-row items-center justify-between py-4 border-b border-gray-800">
           <View className="flex-row items-center">
-            <Ionicons name="shapes-outline" size={22} color="#8B5CF6" />
-            <Text className="text-gray-300 ml-4 text-base">Category</Text>
+            <Ionicons
+              name="shapes-outline"
+              size={22}
+              color={Colors.dark.primary}
+            />
+            <Text
+              style={{ color: Colors.dark.textTertiary }}
+              className="ml-4 text-base"
+            >
+              Category
+            </Text>
           </View>
-          <Text className="text-[#22C55E] text-base font-bold">
+          <Text
+            style={{ color: Colors.dark.success }}
+            className="text-base font-bold"
+          >
             {getCategoryName(habit.category)}
           </Text>
         </TouchableOpacity>
@@ -140,14 +158,15 @@ const EditTab = ({ habit }: EditTabProps) => {
           <Ionicons
             name="information-circle-outline"
             size={22}
-            color="#8B5CF6"
+            color={Colors.dark.primary}
           />
           <TextInput
             value={description}
             onChangeText={setDescription}
             placeholder="Description"
-            placeholderTextColor="#666"
-            className="flex-1 ml-4 text-gray-300 text-base"
+            placeholderTextColor={Colors.dark.textTertiary}
+            style={{ color: Colors.dark.textTertiary }}
+            className="flex-1 ml-4 text-base"
             multiline
           />
         </View>
@@ -157,8 +176,17 @@ const EditTab = ({ habit }: EditTabProps) => {
           className="flex-row items-center justify-between py-4 border-b border-gray-800"
         >
           <View className="flex-row items-center">
-            <Ionicons name="flag-outline" size={22} color="#8B5CF6" />
-            <Text className="text-gray-300 ml-4 text-base">Priority</Text>
+            <Ionicons
+              name="flag-outline"
+              size={22}
+              color={Colors.dark.primary}
+            />
+            <Text
+              style={{ color: Colors.dark.textTertiary }}
+              className="ml-4 text-base"
+            >
+              Priority
+            </Text>
           </View>
           <Text
             className={`text-base font-bold ${priority === "High" ? "text-red-500" : priority === "Medium" ? "text-yellow-500" : "text-green-500"}`}
@@ -175,11 +203,19 @@ const EditTab = ({ habit }: EditTabProps) => {
             <Ionicons
               name="calendar-number-outline"
               size={22}
-              color="#8B5CF6"
+              color={Colors.dark.primary}
             />
-            <Text className="text-gray-300 ml-4 text-base">Start date</Text>
+            <Text
+              style={{ color: Colors.dark.textTertiary }}
+              className="ml-4 text-base"
+            >
+              Start date
+            </Text>
           </View>
-          <Text className="text-white text-base font-bold">
+          <Text
+            style={{ color: Colors.dark.text }}
+            className="text-base font-bold"
+          >
             {formatDate(startDate)}
           </Text>
         </TouchableOpacity>
@@ -195,12 +231,24 @@ const EditTab = ({ habit }: EditTabProps) => {
         <View className="py-4 border-b border-gray-800">
           <View className="flex-row items-center justify-between">
             <View className="flex-row items-center">
-              <Ionicons name="calendar-sharp" size={22} color="#8B5CF6" />
-              <Text className="text-gray-300 ml-4 text-base">End date</Text>
+              <Ionicons
+                name="calendar-sharp"
+                size={22}
+                color={Colors.dark.primary}
+              />
+              <Text
+                style={{ color: Colors.dark.textTertiary }}
+                className="ml-4 text-base"
+              >
+                End date
+              </Text>
             </View>
             <Switch
-              trackColor={{ false: "#333", true: "#8B5CF6" }}
-              thumbColor={isEndDateEnabled ? "#ffffff" : "#f4f3f4"}
+              trackColor={{
+                false: Colors.dark.border,
+                true: Colors.dark.primary,
+              }}
+              thumbColor={isEndDateEnabled ? Colors.dark.text : "#f4f3f4"}
               onValueChange={(val) => {
                 setIsEndDateEnabled(val);
                 if (val && !endDate) {
@@ -218,8 +266,16 @@ const EditTab = ({ habit }: EditTabProps) => {
               onPress={() => setShowEndPicker(true)}
               className="flex-row justify-end mt-2"
             >
-              <Text className="text-gray-400 text-sm mr-2">Ends on:</Text>
-              <Text className="text-[#8B5CF6] text-base font-bold">
+              <Text
+                style={{ color: Colors.dark.textSecondary }}
+                className="text-sm mr-2"
+              >
+                Ends on:
+              </Text>
+              <Text
+                style={{ color: Colors.dark.primary }}
+                className="text-base font-bold"
+              >
                 {formatDate(endDate)}
               </Text>
             </TouchableOpacity>
@@ -239,17 +295,28 @@ const EditTab = ({ habit }: EditTabProps) => {
         <View className="mt-8 space-y-4">
           <TouchableOpacity
             onPress={handleSave}
-            className="flex-row items-center justify-center py-4 bg-[#8B5CF6] rounded-xl active:opacity-80"
+            style={{ backgroundColor: Colors.dark.primary }}
+            className="flex-row items-center justify-center py-4 rounded-xl active:opacity-80"
           >
-            <Ionicons name="save-outline" size={22} color="white" />
-            <Text className="text-white ml-2 text-base font-bold">
+            <Ionicons name="save-outline" size={22} color={Colors.dark.text} />
+            <Text
+              style={{ color: Colors.dark.text }}
+              className="ml-2 text-base font-bold"
+            >
               Save Changes
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity className="flex-row items-center py-4 active:opacity-50">
-            <Ionicons name="refresh-outline" size={22} color="#8B5CF6" />
-            <Text className="text-white ml-4 text-base">
+            <Ionicons
+              name="refresh-outline"
+              size={22}
+              color={Colors.dark.primary}
+            />
+            <Text
+              style={{ color: Colors.dark.text }}
+              className="ml-4 text-base"
+            >
               Restart habit progress
             </Text>
           </TouchableOpacity>

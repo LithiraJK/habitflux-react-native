@@ -8,9 +8,10 @@ import {
   Switch,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
+import { Colors } from "@/constants/theme";
 import { useLoader } from "@/hooks/useLoader";
 import { addHabit } from "@/services/habitService";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
@@ -148,8 +149,8 @@ const Reminders = () => {
   };
 
   return (
-    <View className="flex-1 bg-[#121212] p-6">
-      <Text className="text-[#0891B2] text-xl font-bold text-center mt-10 mb-12">
+    <View className={`flex-1 ${Colors.dark.background} p-6`}>
+      <Text className={`${Colors.dark.primary} font-bold text-center mt-10 mb-12`}>
         When do you want to do it?
       </Text>
 
@@ -157,14 +158,27 @@ const Reminders = () => {
         {/* 1. Start Date */}
         <View className="flex-row justify-between items-center mb-8">
           <View className="flex-row items-center">
-            <Ionicons name="calendar-outline" size={24} color="#0891B2" />
-            <Text className="text-gray-300 text-base ml-4">Start date</Text>
+            <Ionicons
+              name="calendar-outline"
+              size={24}
+              color={Colors.dark.primary}
+            />
+            <Text
+              className="text-base ml-4"
+              style={{ color: Colors.dark.primary }}
+            >
+              Start date
+            </Text>
           </View>
           <TouchableOpacity
             onPress={() => setShowStartPicker(true)}
-            className="bg-[#083344] px-4 py-2 rounded-lg"
+            className="px-4 py-2 rounded-lg"
+            style={{ backgroundColor: Colors.dark.disabled }}
           >
-            <Text className="text-[#0891B2] font-bold">
+            <Text
+              className="font-bold"
+              style={{ color: Colors.dark.primary }}
+            >
               {getDisplayDate(startDate)}
             </Text>
           </TouchableOpacity>
@@ -183,12 +197,26 @@ const Reminders = () => {
         <View className="mb-8">
           <View className="flex-row justify-between items-center">
             <View className="flex-row items-center">
-              <Ionicons name="calendar" size={24} color="#0891B2" />
-              <Text className="text-gray-300 text-base ml-4">End date</Text>
+              <Ionicons
+                name="calendar"
+                size={24}
+                color={Colors.dark.primary}
+              />
+              <Text
+                className="text-base ml-4"
+                style={{ color: Colors.dark.textSecondary }}
+              >
+                End date
+              </Text>
             </View>
             <Switch
-              trackColor={{ false: "#3e3e3e", true: "#0891B2" }}
-              thumbColor={isEndDateEnabled ? "#ffffff" : "#f4f3f4"}
+              trackColor={{
+                false: Colors.dark.border,
+                true: Colors.dark.primary,
+              }}
+              thumbColor={
+                isEndDateEnabled ? Colors.dark.text : Colors.dark.textSecondary
+              }
               onValueChange={setIsEndDateEnabled}
               value={isEndDateEnabled}
             />
@@ -197,17 +225,32 @@ const Reminders = () => {
             <View className="flex-row justify-between items-center mt-6 ml-10">
               <TouchableOpacity
                 onPress={() => setShowEndPicker(true)}
-                className="bg-[#083344] px-4 py-2 rounded-lg"
+                className="px-4 py-2 rounded-lg"
+                style={{ backgroundColor: Colors.dark.disabled }}
               >
-                <Text className="text-[#0891B2] font-bold">
+                <Text
+                  className="font-bold"
+                  style={{ color: Colors.dark.primary }}
+                >
                   {getDisplayDate(endDate)}
                 </Text>
               </TouchableOpacity>
               <View className="flex-row items-end">
-                <Text className="text-white text-lg font-bold border-b border-gray-600 px-2 pb-1 min-w-[40px] text-center">
+                <Text
+                  className="text-lg font-bold border-b px-2 pb-1 min-w-[40px] text-center"
+                  style={{
+                    color: Colors.dark.text,
+                    borderBottomColor: Colors.dark.border,
+                  }}
+                >
                   {durationInDays}
                 </Text>
-                <Text className="text-gray-400 text-base ml-2 mb-1">days.</Text>
+                <Text
+                  className="text-base ml-2 mb-1"
+                  style={{ color: Colors.dark.textSecondary }}
+                >
+                  days.
+                </Text>
               </View>
             </View>
           )}
@@ -225,24 +268,46 @@ const Reminders = () => {
         {/* 3. Time and Reminders (Opens Modal) */}
         <View className="flex-row justify-between items-center mb-8">
           <View className="flex-row items-center">
-            <Ionicons name="notifications-outline" size={24} color="#0891B2" />
-            <Text className="text-gray-300 text-base ml-4">
+            <Ionicons
+              name="notifications-outline"
+              size={24}
+              color={Colors.dark.primary}
+            />
+            <Text
+              className="text-base ml-4"
+              style={{ color: Colors.dark.textSecondary }}
+            >
               Time and reminders
             </Text>
           </View>
           <TouchableOpacity
             onPress={openNewReminderModal}
-            className="bg-[#083344] w-8 h-8 rounded-full items-center justify-center"
+            className="w-8 h-8 rounded-full items-center justify-center"
+            style={{ backgroundColor: Colors.dark.disabled }}
           >
-            <Text className="text-[#0891B2] font-bold">{reminders.length}</Text>
+            <Text
+              className="font-bold"
+              style={{ color: Colors.dark.primary }}
+            >
+              {reminders.length}
+            </Text>
           </TouchableOpacity>
         </View>
 
         {/* 4. Priority */}
         <View className="flex-row justify-between items-center mb-8">
           <View className="flex-row items-center">
-            <Ionicons name="flag-outline" size={24} color="#0891B2" />
-            <Text className="text-gray-300 text-base ml-4">Priority</Text>
+            <Ionicons
+              name="flag-outline"
+              size={24}
+              color={Colors.dark.primary}
+            />
+            <Text
+              className="text-base ml-4"
+              style={{ color: Colors.dark.textSecondary }}
+            >
+              Priority
+            </Text>
           </View>
           <TouchableOpacity
             onPress={() =>
@@ -250,9 +315,15 @@ const Reminders = () => {
                 p === "Medium" ? "High" : p === "High" ? "Low" : "Medium",
               )
             }
-            className="bg-[#083344] px-4 py-2 rounded-lg"
+            className="px-4 py-2 rounded-lg"
+            style={{ backgroundColor: Colors.dark.disabled }}
           >
-            <Text className="text-[#0891B2] font-bold">{priority}</Text>
+            <Text
+              className="font-bold"
+              style={{ color: Colors.dark.primary }}
+            >
+              {priority}
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -260,17 +331,42 @@ const Reminders = () => {
       {/* --- Footer Navigation --- */}
       <View className="mt-auto flex-row justify-between items-center mb-6">
         <TouchableOpacity onPress={() => router.back()}>
-          <Text className="text-gray-400 font-bold text-base">BACK</Text>
+          <Text
+            className="font-bold text-base"
+            style={{ color: Colors.dark.textSecondary }}
+          >
+            BACK
+          </Text>
         </TouchableOpacity>
         <View className="flex-row space-x-2">
-          <View className="w-2 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 h-2 rounded-full bg-[#083344]" />
-          <View className="w-2 h-2 rounded-full bg-[#0891B2]" />
+          <View
+            className="w-2 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.disabled }}
+          />
+          <View
+            className="w-2 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.disabled }}
+          />
+          <View
+            className="w-2 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.disabled }}
+          />
+          <View
+            className="w-2 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.disabled }}
+          />
+          <View
+            className="w-2 h-2 rounded-full"
+            style={{ backgroundColor: Colors.dark.primary }}
+          />
         </View>
         <TouchableOpacity onPress={handleSave}>
-          <Text className="text-[#0891B2] font-bold text-base">SAVE</Text>
+          <Text
+            className="font-bold text-base"
+            style={{ color: Colors.dark.primary }}
+          >
+            SAVE
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -281,8 +377,14 @@ const Reminders = () => {
         onRequestClose={() => setShowReminderModal(false)}
       >
         <View className="flex-1 justify-end bg-black/80">
-          <View className="bg-[#1C1C1E] rounded-t-3xl p-6 pb-10">
-            <Text className="text-gray-400 text-center mb-6 text-base">
+          <View
+            className="rounded-t-3xl p-6 pb-10"
+            style={{ backgroundColor: Colors.dark.cardBackground }}
+          >
+            <Text
+              className="text-center mb-6 text-base"
+              style={{ color: Colors.dark.textSecondary }}
+            >
               New reminder
             </Text>
 
@@ -290,10 +392,18 @@ const Reminders = () => {
               onPress={() => setShowTimePicker(true)}
               className="items-center mb-8"
             >
-              <Text className="text-white text-5xl font-bold">
+              <Text
+                className="text-5xl font-bold"
+                style={{ color: Colors.dark.text }}
+              >
                 {formatTime(tempTime)}
               </Text>
-              <Text className="text-[#8B5CF6] text-sm mt-1">Reminder time</Text>
+              <Text
+                className="text-sm mt-1"
+                style={{ color: Colors.dark.textSecondary }}
+              >
+                Reminder time
+              </Text>
             </TouchableOpacity>
 
             {showTimePicker && (
@@ -306,16 +416,26 @@ const Reminders = () => {
             )}
 
             {/* Reminder Type Selection */}
-            <Text className="text-[#8B5CF6] mb-3 text-sm font-medium">
+            <Text
+              className="mb-3 text-sm font-medium"
+              style={{ color: Colors.dark.textSecondary }}
+            >
               Reminder type
             </Text>
-            <View className="flex-row justify-between bg-[#121212] p-1 rounded-xl mb-6">
+            <View
+              className="flex-row justify-between p-1 rounded-xl mb-6"
+              style={{ backgroundColor: Colors.dark.background }}
+            >
               {(["none", "notification", "alarm"] as ReminderType[]).map(
                 (type) => (
                   <TouchableOpacity
                     key={type}
                     onPress={() => setTempType(type)}
-                    className={`flex-1 items-center py-3 rounded-lg ${tempType === type ? "bg-[#2C2C2E]" : ""}`}
+                    className="flex-1 items-center py-3 rounded-lg"
+                    style={{
+                      backgroundColor:
+                        tempType === type ? Colors.dark.border : "transparent",
+                    }}
                   >
                     <Ionicons
                       name={
@@ -326,10 +446,20 @@ const Reminders = () => {
                             : "alarm-outline"
                       }
                       size={20}
-                      color={tempType === type ? "#8B5CF6" : "gray"}
+                      color={
+                        tempType === type
+                          ? Colors.dark.primary
+                          : Colors.dark.textSecondary
+                      }
                     />
                     <Text
-                      className={`text-xs mt-1 ${tempType === type ? "text-[#8B5CF6]" : "text-gray-500"}`}
+                      className="text-xs mt-1"
+                      style={{
+                        color:
+                          tempType === type
+                            ? Colors.dark.primary
+                            : Colors.dark.textSecondary,
+                      }}
                     >
                       {type === "none"
                         ? "Don't remind"
@@ -341,7 +471,10 @@ const Reminders = () => {
             </View>
 
             {/* Reminder Schedule */}
-            <Text className="text-[#8B5CF6] mb-3 text-sm font-medium">
+            <Text
+              className="mb-3 text-sm font-medium"
+              style={{ color: Colors.dark.textSecondary }}
+            >
               Reminder schedule
             </Text>
             <View className="space-y-4 mb-8">
@@ -356,13 +489,27 @@ const Reminders = () => {
                   className="flex-row items-center"
                 >
                   <View
-                    className={`w-5 h-5 rounded-full border-2 mr-3 items-center justify-center ${tempSchedule === item.id ? "border-[#8B5CF6]" : "border-gray-500"}`}
+                    className="w-5 h-5 rounded-full border-2 mr-3 items-center justify-center"
+                    style={{
+                      borderColor:
+                        tempSchedule === item.id
+                          ? Colors.dark.primary
+                          : Colors.dark.textSecondary,
+                    }}
                   >
                     {tempSchedule === item.id && (
-                      <View className="w-2.5 h-2.5 rounded-full bg-[#8B5CF6]" />
+                      <View
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ backgroundColor: Colors.dark.primary }}
+                      />
                     )}
                   </View>
-                  <Text className="text-white text-base">{item.label}</Text>
+                  <Text
+                    className="text-base"
+                    style={{ color: Colors.dark.text }}
+                  >
+                    {item.label}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -372,13 +519,21 @@ const Reminders = () => {
                 onPress={() => setShowReminderModal(false)}
                 className="flex-1 mr-4 py-3 items-center"
               >
-                <Text className="text-white font-bold">CANCEL</Text>
+                <Text className="font-bold" style={{ color: Colors.dark.text }}>
+                  CANCEL
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleAddReminder}
-                className="flex-1 bg-[#2C2C2E] py-3 rounded-xl items-center"
+                className="flex-1 py-3 rounded-xl items-center"
+                style={{ backgroundColor: Colors.dark.border }}
               >
-                <Text className="text-[#8B5CF6] font-bold">CONFIRM</Text>
+                <Text
+                  className="font-bold"
+                  style={{ color: Colors.dark.primary }}
+                >
+                  CONFIRM
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

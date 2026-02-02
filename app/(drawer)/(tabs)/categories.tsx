@@ -1,14 +1,15 @@
+import CategoryItem from "@/components/ui/CategoryItem";
+import CreateCategorySheet from "@/components/ui/CreateCategorySheet";
+import { Colors } from "@/constants/theme";
+import { useCategoryStore } from "@/store/useCategoryStore";
 import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import CreateCategorySheet from "@/components/ui/CreateCategorySheet";
-import { useCategoryStore } from "@/store/useCategoryStore";
-import CategoryItem from "@/components/ui/CategoryItem";
 
 const CategoriesScreen = () => {
   const {
@@ -36,22 +37,31 @@ const CategoriesScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-[#121212] px-4 pt-6">
+    <View
+      style={{ flex: 1, backgroundColor: Colors.dark.background }}
+      className="px-4 pt-6"
+    >
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         {/* Custom Categories Section */}
         <View className="mb-8">
-          <Text className="text-gray-400 font-bold mb-1 text-base">
+          <Text
+            style={{ color: Colors.dark.textSecondary }}
+            className="font-bold mb-1 text-base"
+          >
             Custom categories
           </Text>
-          <Text className="text-gray-600 text-xs mb-6">
+          <Text
+            style={{ color: Colors.dark.textTertiary }}
+            className="text-xs mb-6"
+          >
             {categories.length} available
           </Text>
 
           {loading ? (
-            <ActivityIndicator color="#0891B2" />
+            <ActivityIndicator color={Colors.dark.defaultCategory} />
           ) : (
             <View className="flex-row flex-wrap justify-start">
               {categories.map((item) => (
@@ -67,10 +77,16 @@ const CategoriesScreen = () => {
 
         {/* Default Categories Section */}
         <View>
-          <Text className="text-gray-400 font-bold mb-1 text-base">
+          <Text
+            style={{ color: Colors.dark.textSecondary }}
+            className="font-bold mb-1 text-base"
+          >
             Default categories
           </Text>
-          <Text className="text-gray-600 text-xs mb-6">
+          <Text
+            style={{ color: Colors.dark.textTertiary }}
+            className="text-xs mb-6"
+          >
             {defaultCategories.length} available
           </Text>
 
@@ -88,11 +104,15 @@ const CategoriesScreen = () => {
 
       <View className="absolute bottom-6 left-4 right-4">
         <TouchableOpacity
-          className="bg-[#818CF8] py-4 rounded-2xl items-center shadow-2xl"
+          style={{ backgroundColor: Colors.dark.primary }}
+          className="py-4 rounded-2xl items-center shadow-2xl"
           activeOpacity={0.8}
           onPress={handleAddNewCategory}
         >
-          <Text className="text-white font-bold text-lg tracking-widest uppercase">
+          <Text
+            style={{ color: Colors.dark.text }}
+            className="font-bold text-lg tracking-widest uppercase"
+          >
             New Category
           </Text>
         </TouchableOpacity>

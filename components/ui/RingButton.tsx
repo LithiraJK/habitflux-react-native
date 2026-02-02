@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -32,7 +33,13 @@ const RingButton = ({
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke={disabled ? "#1F2937" : completed ? "#22C55E40" : "#374151"}
+            stroke={
+              disabled
+                ? Colors.dark.disabled
+                : completed
+                  ? `${Colors.dark.success}40`
+                  : Colors.dark.border
+            }
             strokeWidth={strokeWidth}
             fill="transparent"
           />
@@ -42,7 +49,11 @@ const RingButton = ({
             cy={size / 2}
             r={radius}
             stroke={
-              disabled ? "transparent" : completed ? "#22C55E" : "transparent"
+              disabled
+                ? "transparent"
+                : completed
+                  ? Colors.dark.success
+                  : "transparent"
             }
             strokeWidth={strokeWidth}
             strokeDasharray={circumference}
@@ -55,11 +66,20 @@ const RingButton = ({
 
         <View className="absolute w-9 h-9 rounded-full items-center justify-center bg-transparent">
           {disabled ? (
-            <Ionicons name="lock-closed" size={16} color="#4B5563" />
+            <Ionicons
+              name="lock-closed"
+              size={16}
+              color={Colors.dark.disabledText}
+            />
           ) : completed ? (
-            <Ionicons name="checkmark" size={24} color="#22C55E" />
+            <Ionicons name="checkmark" size={24} color={Colors.dark.success} />
           ) : (
-            <Text className="text-gray-500 font-bold text-lg">0</Text>
+            <Text
+              style={{ color: Colors.dark.textTertiary }}
+              className="font-bold text-lg"
+            >
+              0
+            </Text>
           )}
         </View>
       </View>

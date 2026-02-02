@@ -1,8 +1,9 @@
+import { Colors } from "@/constants/theme";
 import { logout } from "@/services/authService";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import {
-    DrawerContentScrollView,
-    DrawerItemList,
+  DrawerContentScrollView,
+  DrawerItemList,
 } from "@react-navigation/drawer";
 import { router } from "expo-router";
 import { Drawer } from "expo-router/drawer";
@@ -31,14 +32,40 @@ const CustomDrawerContent = (props: any) => {
   });
 
   return (
-    <View className="flex-1 bg-[#1A1A1A]" style={{ paddingTop: insets.top }}>
-      <View className="px-6 pt-6 pb-8 bg-gradient-to-b from-[#7C3AED] to-[#6366F1]">
-        <Text className="text-white text-3xl font-bold tracking-wide">
-          Habit<Text className="text-[#C084FC]">Flux</Text>
+    <View
+      className="flex-1"
+      style={{
+        paddingTop: insets.top,
+        backgroundColor: Colors.dark.background,
+      }}
+    >
+      <View
+        className="px-6 pt-6 pb-8"
+        style={{
+          backgroundColor: Colors.dark.background,
+          borderBottomWidth: 1,
+          borderBottomColor: Colors.dark.border,
+        }}
+      >
+        <Text
+          className="text-3xl font-bold tracking-wide"
+          style={{ color: Colors.dark.text }}
+        >
+          Habit<Text style={{ color: Colors.dark.primary }}>Flux</Text>
         </Text>
         <View className="mt-3">
-          <Text className="text-white/90 text-base font-medium">{dayName}</Text>
-          <Text className="text-white/70 text-sm">{fullDate}</Text>
+          <Text
+            className="text-base font-medium"
+            style={{ color: Colors.dark.text, opacity: 0.9 }}
+          >
+            {dayName}
+          </Text>
+          <Text
+            className="text-sm"
+            style={{ color: Colors.dark.text, opacity: 0.7 }}
+          >
+            {fullDate}
+          </Text>
         </View>
       </View>
 
@@ -46,35 +73,46 @@ const CustomDrawerContent = (props: any) => {
       <DrawerContentScrollView
         {...props}
         contentContainerStyle={{ paddingTop: 10 }}
-        style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
       >
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
 
       {/* Profile & Logout */}
       <View
-        className="p-5 border-t border-gray-800"
-        style={{ paddingBottom: insets.bottom + 10 }}
+        className="p-5"
+        style={{
+          paddingBottom: insets.bottom + 10,
+          borderTopWidth: 1,
+          borderTopColor: Colors.dark.border,
+        }}
       >
         <TouchableOpacity
-          className="flex-row items-center bg-gray-800/50 p-3 rounded-xl"
+          className="flex-row items-center p-3 rounded-xl"
           activeOpacity={0.7}
           onPress={handleLogout}
         >
           <View className="relative">
             <Image
               source={{
-                uri: "https://ui-avatars.com/api/?name=Lithira+Jayanaka&background=7C3AED&color=fff",
+                uri: "https://ui-avatars.com/api/?name=Lithira+Jayanaka&background=818CF8&color=fff",
               }}
-              className="w-11 h-11 rounded-full border-2 border-[#7C3AED]"
+              className="w-11 h-11 rounded-full border-2"
+              style={{ borderColor: Colors.dark.primary }}
             />
           </View>
 
           <View className="ml-3 flex-1">
-            <Text className="font-semibold text-base leading-tight text-white">
+            <Text
+              className="font-semibold text-base leading-tight"
+              style={{ color: Colors.dark.text }}
+            >
               Lithira Jayanaka
             </Text>
-            <Text className="text-xs text-gray-400" numberOfLines={1}>
+            <Text
+              className="text-xs"
+              style={{ color: Colors.dark.textSecondary }}
+              numberOfLines={1}
+            >
               lithira@gmail.com
             </Text>
           </View>
@@ -98,9 +136,9 @@ const DrawerLayout = () => {
         drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
           headerShown: false,
-          drawerActiveTintColor: "#A78BFA",
-          drawerActiveBackgroundColor: "#2D2D2D",
-          drawerInactiveTintColor: "#9CA3AF",
+          drawerActiveTintColor: Colors.dark.primary,
+          drawerActiveBackgroundColor: Colors.dark.border,
+          drawerInactiveTintColor: Colors.dark.textSecondary,
           drawerLabelStyle: {
             marginLeft: 8,
             fontWeight: "500",
@@ -115,7 +153,7 @@ const DrawerLayout = () => {
           },
           drawerStyle: {
             width: 280,
-            backgroundColor: "#1A1A1A",
+            backgroundColor: Colors.dark.background,
           },
         }}
       >

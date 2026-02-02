@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { useHabitStore } from "@/store/useHabitStore";
 import { generateInfiniteDates } from "@/utils/dateHelpers";
 import { isSameDay } from "date-fns";
@@ -13,13 +14,11 @@ const CalendarStrip = () => {
   const { selectedDate, setSelectedDate } = useHabitStore();
 
   useEffect(() => {
-   
     const todayIndex = dates.findIndex((date) =>
       isSameDay(date.fullDate, new Date()),
     );
 
     if (todayIndex !== -1) {
-     
       setTimeout(() => {
         flatListRef.current?.scrollToIndex({
           index: todayIndex,
@@ -62,19 +61,31 @@ const CalendarStrip = () => {
         return (
           <TouchableOpacity
             onPress={() => setSelectedDate(item.fullDate)}
-            className={`items-center justify-center w-[60px] h-20 mx-1 rounded-2xl border ${
-              isSelected
-                ? "bg-[#818CF8] border-[#818CF8]"
-                : "bg-[#1C1C1E] border-gray-800"
-            }`}
+            style={{
+              backgroundColor: isSelected
+                ? Colors.dark.primary
+                : Colors.dark.cardBackground,
+              borderColor: isSelected
+                ? Colors.dark.primary
+                : Colors.dark.border,
+            }}
+            className="items-center justify-center w-[60px] h-20 mx-1 rounded-2xl border"
           >
             <Text
-              className={`${isSelected ? "text-white" : "text-gray-400"} text-xs font-medium`}
+              style={{
+                color: isSelected
+                  ? Colors.dark.text
+                  : Colors.dark.textSecondary,
+              }}
+              className="text-xs font-medium"
             >
               {item.dayName}
             </Text>
             <Text
-              className={`${isSelected ? "text-white" : "text-gray-200"} text-lg font-bold mt-1`}
+              style={{
+                color: isSelected ? Colors.dark.text : Colors.dark.textTertiary,
+              }}
+              className="text-lg font-bold mt-1"
             >
               {item.dateNum}
             </Text>

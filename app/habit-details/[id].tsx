@@ -1,12 +1,13 @@
-import React, { useState, useMemo } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import { useHabitStore } from "@/store/useHabitStore";
 import CalendarTab from "@/components/ui/CalendarTab";
-import StatisticsTab from "@/components/ui/StatisticsTab";
 import EditTab from "@/components/ui/EditTab";
+import StatisticsTab from "@/components/ui/StatisticsTab";
+import { Colors } from "@/constants/theme";
+import { useHabitStore } from "@/store/useHabitStore";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useMemo, useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const HabitDetailScreen = () => {
   const router = useRouter();
@@ -26,32 +27,50 @@ const HabitDetailScreen = () => {
 
   if (!selectedHabit) {
     return (
-      <SafeAreaView className="flex-1 bg-[#121212] justify-center items-center">
-        <Text className="text-white text-lg font-bold">Habit not found!</Text>
-        <Text className="text-gray-500 mt-2">It might have been deleted.</Text>
+      <SafeAreaView
+        className="flex-1 justify-center items-center"
+        style={{ backgroundColor: Colors.dark.background }}
+      >
+        <Text className="text-lg font-bold" style={{ color: Colors.dark.text }}>
+          Habit not found!
+        </Text>
+        <Text className="mt-2" style={{ color: Colors.dark.textSecondary }}>
+          It might have been deleted.
+        </Text>
 
         <TouchableOpacity
           onPress={() => router.back()}
-          className="mt-6 bg-[#1C1C1E] px-6 py-3 rounded-xl"
+          className="mt-6 px-6 py-3 rounded-xl"
+          style={{ backgroundColor: Colors.dark.cardBackground }}
         >
-          <Text className="text-[#8B5CF6] font-bold">Go Back</Text>
+          <Text className="font-bold" style={{ color: Colors.dark.primary }}>
+            Go Back
+          </Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-[#121212]">
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: Colors.dark.background }}
+    >
       <View className="px-4 py-2 flex-row items-center justify-between">
         <TouchableOpacity
           onPress={() => router.replace("/(drawer)/(tabs)/habits")}
           className="p-2"
         >
-          <Ionicons name="chevron-back" size={24} color="#8B5CF6" />
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color={Colors.dark.primary}
+          />
         </TouchableOpacity>
 
         <Text
-          className="text-white text-lg font-bold flex-1 text-center mr-8"
+          className="text-lg font-bold flex-1 text-center mr-8"
+          style={{ color: Colors.dark.text }}
           numberOfLines={1}
         >
           {selectedHabit.title}
@@ -59,22 +78,39 @@ const HabitDetailScreen = () => {
       </View>
 
       {/* --- Tab Navigation Bar --- */}
-      <View className="flex-row justify-around border-b border-gray-800 mt-2">
+      <View
+        className="flex-row justify-around border-b mt-2"
+        style={{ borderBottomColor: Colors.dark.border }}
+      >
         {["Calendar", "Statistics", "Edit"].map((tab) => (
           <TouchableOpacity
             key={tab}
             onPress={() => setActiveTab(tab as any)}
-            className={`pb-3 px-4 ${activeTab === tab ? "border-b-2 border-[#8B5CF6]" : ""}`}
+            className="pb-3 px-4"
+            style={
+              activeTab === tab
+                ? {
+                    borderBottomWidth: 2,
+                    borderBottomColor: Colors.dark.primary,
+                  }
+                : {}
+            }
           >
             <Text
-              className={`${activeTab === tab ? "text-white font-bold" : "text-gray-500"}`}
+              className={activeTab === tab ? "font-bold" : ""}
+              style={{
+                color:
+                  activeTab === tab
+                    ? Colors.dark.text
+                    : Colors.dark.textSecondary,
+              }}
             >
               {tab}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
-      
+
       <View className="flex-1 mt-2">
         {activeTab === "Calendar" && <CalendarTab habit={selectedHabit} />}
         {activeTab === "Statistics" && <StatisticsTab habit={selectedHabit} />}

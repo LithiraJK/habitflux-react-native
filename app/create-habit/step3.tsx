@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
 import { showToast } from "@/utils/notifications";
 import { useRouter } from "expo-router";
@@ -78,23 +79,38 @@ const DefineHabit = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-[#121212]"
+      className="flex-1"
+      style={{ backgroundColor: Colors.dark.background }}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 24 }}>
-        <Text className="text-[#0891B2] text-xl font-bold text-center mt-10 mb-12">
+        <Text
+          className="text-xl font-bold text-center mt-10 mb-12"
+          style={{ color: Colors.dark.primary }}
+        >
           Define your habit
         </Text>
 
         <View className="mb-6">
-          <Text className="text-[#0891B2] text-xs font-bold mb-2 ml-1 relative -top-3 left-4 bg-[#121212] self-start px-1">
+          <Text
+            className="text-xs font-bold mb-2 ml-1 relative -top-3 left-4 self-start px-1"
+            style={{
+              color: Colors.dark.primary,
+              backgroundColor: Colors.dark.background,
+            }}
+          >
             Habit Name
           </Text>
           <TextInput
             value={title}
             onChangeText={setTitle}
             placeholder="e.g., Drink Water"
-            placeholderTextColor="#6B7280"
-            className="bg-transparent border border-[#0891B2] text-white text-lg p-4 rounded-2xl"
+            placeholderTextColor={Colors.dark.textSecondary}
+            className="bg-transparent text-lg p-4 rounded-2xl"
+            style={{
+              borderWidth: 1,
+              borderColor: Colors.dark.primary,
+              color: Colors.dark.text,
+            }}
             autoFocus
           />
         </View>
@@ -105,8 +121,14 @@ const DefineHabit = () => {
             value={description}
             onChangeText={setDescription}
             placeholder="Description (optional)"
-            placeholderTextColor="#6B7280"
-            className="bg-[#1C1C1E] text-white text-base p-4 rounded-2xl border border-gray-800 h-24"
+            placeholderTextColor={Colors.dark.textSecondary}
+            className="text-base p-4 rounded-2xl h-24"
+            style={{
+              backgroundColor: Colors.dark.cardBackground,
+              color: Colors.dark.text,
+              borderWidth: 1,
+              borderColor: Colors.dark.border,
+            }}
             multiline
             textAlignVertical="top"
             autoFocus
@@ -116,38 +138,65 @@ const DefineHabit = () => {
         {habitData.type !== "yes_no" && (
           <View className="flex-row space-x-4 mb-6">
             <View className="flex-1 mr-2">
-              <Text className="text-[#0891B2] text-xs font-bold mb-2 ml-1 relative -top-3 left-4 bg-[#121212] self-start px-1">
+              <Text
+                className="text-xs font-bold mb-2 ml-1 relative -top-3 left-4 self-start px-1"
+                style={{
+                  color: Colors.dark.primary,
+                  backgroundColor: Colors.dark.background,
+                }}
+              >
                 {getTargetLabel()}
               </Text>
               <TextInput
                 value={targetValue}
                 onChangeText={setTargetValue}
                 placeholder="0"
-                placeholderTextColor="#6B7280"
+                placeholderTextColor={Colors.dark.textSecondary}
                 keyboardType="numeric"
-                className="bg-transparent border border-[#0891B2] text-white text-lg p-4 rounded-2xl"
+                className="bg-transparent text-lg p-4 rounded-2xl"
+                style={{
+                  borderWidth: 1,
+                  borderColor: Colors.dark.primary,
+                  color: Colors.dark.text,
+                }}
               />
             </View>
 
             {/* Unit Input (Only for 'count') */}
             {habitData.type === "count" && (
               <View className="flex-1 ml-2">
-                <Text className="text-[#0891B2] text-xs font-bold mb-2 ml-1 relative -top-3 left-4 bg-[#121212] self-start px-1">
+                <Text
+                  className="text-xs font-bold mb-2 ml-1 relative -top-3 left-4 self-start px-1"
+                  style={{
+                    color: Colors.dark.primary,
+                    backgroundColor: Colors.dark.background,
+                  }}
+                >
                   Unit
                 </Text>
                 <TextInput
                   value={unit}
                   onChangeText={setUnit}
                   placeholder="e.g. ml"
-                  placeholderTextColor="#6B7280"
-                  className="bg-transparent border border-[#0891B2] text-white text-lg p-4 rounded-2xl"
+                  placeholderTextColor={Colors.dark.textSecondary}
+                  className="bg-transparent text-lg p-4 rounded-2xl"
+                  style={{
+                    borderWidth: 1,
+                    borderColor: Colors.dark.primary,
+                    color: Colors.dark.text,
+                  }}
                 />
               </View>
             )}
 
             {habitData.type === "timer" && (
               <View className="justify-center items-center px-4 rounded-2xl bg-transparent">
-                <Text className="text-gray-400 font-bold">MIN</Text>
+                <Text
+                  className="font-bold"
+                  style={{ color: Colors.dark.textSecondary }}
+                >
+                  MIN
+                </Text>
               </View>
             )}
           </View>
@@ -156,21 +205,46 @@ const DefineHabit = () => {
         {/* Footer / Navigation */}
         <View className="mt-auto flex-row justify-between items-center mb-6">
           <TouchableOpacity onPress={() => router.back()}>
-            <Text className="text-gray-400 font-bold text-base">BACK</Text>
+            <Text
+              className="font-bold text-base"
+              style={{ color: Colors.dark.textSecondary }}
+            >
+              BACK
+            </Text>
           </TouchableOpacity>
 
           {/* Pagination Dots */}
           <View className="flex-row space-x-2">
-            <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
-            <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
-            <View className="w-2 m-1 h-2 rounded-full bg-[#0891B2]" />
-            <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
-            <View className="w-2 m-1 h-2 rounded-full bg-[#083344]" />
+            <View
+              className="w-2 m-1 h-2 rounded-full"
+              style={{ backgroundColor: Colors.dark.disabled }}
+            />
+            <View
+              className="w-2 m-1 h-2 rounded-full"
+              style={{ backgroundColor: Colors.dark.disabled }}
+            />
+            <View
+              className="w-2 m-1 h-2 rounded-full"
+              style={{ backgroundColor: Colors.dark.primary }}
+            />
+            <View
+              className="w-2 m-1 h-2 rounded-full"
+              style={{ backgroundColor: Colors.dark.disabled }}
+            />
+            <View
+              className="w-2 m-1 h-2 rounded-full"
+              style={{ backgroundColor: Colors.dark.disabled }}
+            />
           </View>
 
           <TouchableOpacity onPress={handleNext} disabled={!title.trim()}>
             <Text
-              className={`font-bold text-base ${title.trim() ? "text-[#0891B2]" : "text-gray-600"}`}
+              className="font-bold text-base"
+              style={{
+                color: title.trim()
+                  ? Colors.dark.primary
+                  : Colors.dark.disabled,
+              }}
             >
               NEXT
             </Text>
