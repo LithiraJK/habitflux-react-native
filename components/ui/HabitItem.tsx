@@ -1,7 +1,7 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import GlassCard from "@/components/ui/GlassCard";
+import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { Text, View } from "react-native";
 import RingButton from "./RingButton";
 
 interface HabitItemProps {
@@ -10,6 +10,7 @@ interface HabitItemProps {
   icon?: string;
   color?: string;
   completed: boolean;
+  disabled?: boolean;
   onToggle: () => void;
 }
 
@@ -19,6 +20,7 @@ const HabitItem = ({
   icon = "leaf",
   color = "#0891B2",
   completed,
+  disabled = false,
   onToggle,
 }: HabitItemProps) => (
   <View className="mb-4">
@@ -44,7 +46,11 @@ const HabitItem = ({
           </View>
         </View>
 
-        <RingButton completed={completed} onToggle={onToggle} />
+        <RingButton
+          completed={completed}
+          disabled={disabled}
+          onToggle={onToggle}
+        />
       </View>
     </GlassCard>
   </View>

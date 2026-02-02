@@ -12,20 +12,20 @@ export const DayItem = ({ date, status }: { date: Date; status: HabitStatus }) =
 
   switch (status) {
     case 'completed':
-      bgClass = 'bg-[#22C55E] border-[#22C55E]';
-      textClass = 'text-black font-bold';
+      bgClass = 'bg-[#22C55E]/20 border-[#22C55E]';
+      textClass = 'text-[#22C55E] font-bold';
       break;
     case 'failed':
       bgClass = 'bg-[#EF4444]/20 border-[#EF4444]';
-      textClass = 'text-[#EF4444]';
+      textClass = 'text-[#EF4444] font-bold';
       break;
     case 'pending':
       bgClass = 'border-[#F59E0B]';
-      textClass = 'text-[#F59E0B]';
+      textClass = 'text-[#F59E0B] font-bold';
       break;
     case 'skipped':
-        bgClass = 'bg-gray-700 border-gray-700';
-        textClass = 'text-gray-400';
+        bgClass = 'bg-yellow-200/20 border-yellow-200';
+        textClass = 'text-yellow-200 font-bold';
         break;
     default:
         bgClass = 'border-gray-800'; 
