@@ -49,7 +49,7 @@ const TabsLayout = () => {
         },
 
         tabBarItemStyle: {
-          paddingVertical: 5,
+          paddingVertical: 25,
         },
 
         tabBarBackground: () => (

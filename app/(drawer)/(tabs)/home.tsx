@@ -93,7 +93,7 @@ const HomeScreen = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.dark.background }}>
-      <View className="px-4 h-[100px] justify-center z-10">
+      <View className="mt-4 px-4 h-[100px] justify-center z-10">
         <CalendarStrip />
       </View>
 

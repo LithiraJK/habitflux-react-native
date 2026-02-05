@@ -12,7 +12,7 @@ const RootLayout = () => {
   return (
     <LoaderProvider>
       <AuthProvider>
-        <View className="flex-1" style={{ marginBottom: 10 }}>
+        <View className="flex-1" style={{ marginBottom: insets.bottom }}>
           <Slot />
         </View>
         <Toast />
