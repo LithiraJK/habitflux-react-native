@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "304091545400",
+    "project_id": "habitflux-2026",
+    "storage_bucket": "habitflux-2026.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304091545400:android:f57980b696adf152c10bcd",
+        "android_client_info": {
+          "package_name": "com.habitflux.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "304091545400-51v2suh775bpeaikmstrk528keneuat6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGAPmb4dvqungZRNU6WZ-UC8JgdgkHYA4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "304091545400-51v2suh775bpeaikmstrk528keneuat6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
