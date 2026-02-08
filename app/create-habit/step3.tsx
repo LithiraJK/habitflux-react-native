@@ -3,6 +3,7 @@ import { useHabitCreateStore } from "@/store/useHabitCreatestore";
 import { showToast } from "@/utils/notifications";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -12,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { BlurView } from "expo-blur";
 
 const DefineHabit = () => {
   const router = useRouter();
@@ -80,8 +82,11 @@ const DefineHabit = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1"
-      style={{ backgroundColor: Colors.dark.background }}
     >
+      <LinearGradient
+        colors={["#0f172a", "#1e1b4b", "#0f172a"]}
+        className="flex-1"
+      >
       <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 24 }}>
         <Text
           className="text-xl font-bold text-center mt-10 mb-12"
@@ -90,50 +95,38 @@ const DefineHabit = () => {
           Define your habit
         </Text>
 
-        <View className="mb-6">
-          <Text
-            className="text-xs font-bold mb-2 ml-1 relative -top-3 left-4 self-start px-1"
-            style={{
-              color: Colors.dark.primary,
-              backgroundColor: Colors.dark.background,
-            }}
-          >
-            Habit Name
-          </Text>
-          <TextInput
-            value={title}
-            onChangeText={setTitle}
-            placeholder="e.g., Drink Water"
-            placeholderTextColor={Colors.dark.textSecondary}
-            className="bg-transparent text-lg p-4 rounded-2xl"
-            style={{
-              borderWidth: 1,
-              borderColor: Colors.dark.primary,
-              color: Colors.dark.text,
-            }}
-            autoFocus
-          />
-        </View>
+        <View className="mb-6 rounded-3xl overflow-hidden border border-white/10">
+  <BlurView intensity={20} tint="dark" className="p-4">
+    <Text className="text-indigo-400 text-[10px] uppercase tracking-widest font-black mb-2 ml-1">
+      Habit Name
+    </Text>
+    <TextInput
+      value={title}
+      onChangeText={setTitle}
+      placeholder="e.g., Drink Water"
+      placeholderTextColor="#64748b"
+      className="text-white text-lg font-bold py-2 px-1"
+      autoFocus
+    />
+  </BlurView>
+</View>
 
-        {/* 2. Description Input */}
-        <View className="mb-6">
-          <TextInput
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Description (optional)"
-            placeholderTextColor={Colors.dark.textSecondary}
-            className="text-base p-4 rounded-2xl h-24"
-            style={{
-              backgroundColor: Colors.dark.cardBackground,
-              color: Colors.dark.text,
-              borderWidth: 1,
-              borderColor: Colors.dark.border,
-            }}
-            multiline
-            textAlignVertical="top"
-            autoFocus
-          />
-        </View>
+<View className="mb-6 rounded-3xl overflow-hidden border border-white/10">
+  <BlurView intensity={20} tint="dark" className="p-4">
+    <Text className="text-gray-500 text-[10px] uppercase tracking-widest font-black mb-2 ml-1">
+      Description (Optional)
+    </Text>
+    <TextInput
+      value={description}
+      onChangeText={setDescription}
+      placeholder="Add some details..."
+      placeholderTextColor="#475569"
+      className="text-gray-300 text-sm py-2 px-1 min-h-[80px]"
+      multiline
+      textAlignVertical="top"
+    />
+  </BlurView>
+</View>
 
         {habitData.type !== "yes_no" && (
           <View className="flex-row space-x-4 mb-6">
@@ -251,6 +244,7 @@ const DefineHabit = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 };

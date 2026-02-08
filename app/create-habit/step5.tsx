@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Modal,
   ScrollView,
@@ -149,13 +150,16 @@ const Reminders = () => {
   };
 
   return (
-    <View className={`flex-1 ${Colors.dark.background} p-6`}>
+    <LinearGradient
+          colors={["#0f172a", "#1e1b4b", "#0f172a"]}
+          className="flex-1"
+        >
+    <View className="flex-1 p-6">
       <Text className={`${Colors.dark.primary} font-bold text-center mt-10 mb-12`}>
         When do you want to do it?
       </Text>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        {/* 1. Start Date */}
         <View className="flex-row justify-between items-center mb-8">
           <View className="flex-row items-center">
             <Ionicons
@@ -193,7 +197,6 @@ const Reminders = () => {
           />
         )}
 
-        {/* 2. End Date */}
         <View className="mb-8">
           <View className="flex-row justify-between items-center">
             <View className="flex-row items-center">
@@ -265,7 +268,6 @@ const Reminders = () => {
           )}
         </View>
 
-        {/* 3. Time and Reminders (Opens Modal) */}
         <View className="flex-row justify-between items-center mb-8">
           <View className="flex-row items-center">
             <Ionicons
@@ -294,7 +296,6 @@ const Reminders = () => {
           </TouchableOpacity>
         </View>
 
-        {/* 4. Priority */}
         <View className="flex-row justify-between items-center mb-8">
           <View className="flex-row items-center">
             <Ionicons
@@ -540,6 +541,7 @@ const Reminders = () => {
         </View>
       </Modal>
     </View>
+    </LinearGradient>
   );
 };
 

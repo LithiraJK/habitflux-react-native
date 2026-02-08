@@ -4,102 +4,108 @@ import { useCategoryStore } from "@/store/useCategoryStore";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, StatusBar } from "react-native";
 
 const CategorySelection = () => {
   const router = useRouter();
   const { setStepData } = useHabitCreateStore();
   const { categories, defaultCategories } = useCategoryStore();
   const [showSheet, setShowSheet] = useState(false);
+  
   const allCategories = [...categories, ...defaultCategories];
 
   const handleSelectCategory = (category: any) => {
     setStepData({ category: category.id });
-    router.push("/create-habit/step2");
+    router.push("/create-habit/step2" as any);
   };
 
   return (
-    <View
-      className="flex-1 px-4 pt-6"
-      style={{ backgroundColor: Colors.dark.background }}
-    >
-      <Text
-        className="text-xl font-bold text-center mb-8 mt-4"
-        style={{ color: Colors.dark.primary }}
+    <View className="flex-1">
+      <StatusBar barStyle="light-content" />
+      
+      <LinearGradient
+        colors={["#0f172a", "#1e1b4b", "#0f172a"]}
+        className="flex-1"
       >
-        Select a category for your habit
-      </Text>
-
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="flex-row flex-wrap justify-between">
-          {allCategories.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => handleSelectCategory(item)}
-              activeOpacity={0.7}
-              className="bg-[rgba(255,255,255,0.8)] w-[48%] px-4 py-4 rounded-2xl mb-2 flex-row justify-between items-center"
-            >
-              <Text
-                className="font-bold text-sm flex-1 mr-2"
-                style={{ color: Colors.dark.text }}
-                numberOfLines={1}
-              >
-                {item.title}
-              </Text>
-
-              <View
-                style={{ backgroundColor: `${item.color}60` }}
-                className="w-10 h-10 rounded-xl items-center justify-center"
-              >
-                <Ionicons
-                  name={item.icon as any}
-                  size={20}
-                  color={item.color}
-                />
-              </View>
-            </TouchableOpacity>
-          ))}
-
+        <View className="pt-14 px-6 pb-4 flex-row items-center">
           <TouchableOpacity
-            onPress={() => setShowSheet(true)}
-            activeOpacity={0.7}
-            className="bg-[rgba(255,255,255,0.8)] w-[48%] px-4 py-4 rounded-2xl mb-2 flex-row justify-between items-center"
-            style={{
-              borderWidth: 1,
-              borderColor: Colors.dark.defaultCategory + "4D",
-            }}
+            onPress={() => router.back()}
+            className="w-10 h-10 rounded-full bg-white/10 items-center justify-center border border-white/20 mr-4"
           >
-            <View>
-              <Text
-                className="font-bold text-sm"
-                style={{ color: Colors.dark.text }}
-              >
-                Create category
-              </Text>
-              <Text
-                className="text-[10px] mt-0.5"
-                style={{ color: Colors.dark.textSecondary }}
-              >
-                {categories.length} available
-              </Text>
-            </View>
-
-            <View
-              className="w-10 h-10 rounded-full border-2 items-center justify-center"
-              style={{ borderColor: Colors.dark.border }}
-            >
-              <Ionicons
-                name="add"
-                size={24}
-                color={Colors.dark.textSecondary}
-              />
-            </View>
+            <Ionicons name="chevron-back" size={24} color="white" />
           </TouchableOpacity>
+          <View>
+            <Text className="text-white text-2xl font-black">Category</Text>
+          </View>
         </View>
 
-        <View className="h-20" />
-      </ScrollView>
+        <ScrollView 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 10, paddingBottom: 120 }}
+        >
+          <Text className="text-gray-400 text-sm mb-6 px-1">
+            Select a category for your habit
+          </Text>
+
+          <View className="flex-row flex-wrap justify-between">
+            {allCategories.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => handleSelectCategory(item)}
+                activeOpacity={0.8}
+                className="w-[48%] mb-3 rounded-2xl overflow-hidden border border-white/10"
+              >
+                <BlurView intensity={20} tint="dark" className="flex-row items-center justify-between p-4 h-[72px]">
+                  {/* Title on Left */}
+                  <Text
+                    className="text-white font-bold text-sm flex-1 mr-2"
+                    numberOfLines={1}
+                  >
+                    {item.title}
+                  </Text>
+                  
+                  {/* Icon Box on Right */}
+                  <View
+                    style={{ backgroundColor: `${item.color}30` }}
+                    className="w-10 h-10 rounded-xl items-center justify-center border border-white/5"
+                  >
+                    <Ionicons
+                      name={item.icon as any}
+                      size={20}
+                      color={item.color}
+                    />
+                  </View>
+                </BlurView>
+              </TouchableOpacity>
+            ))}
+
+            {/* "Create category" Button matching the style */}
+            <TouchableOpacity
+              onPress={() => setShowSheet(true)}
+              activeOpacity={0.8}
+              className="w-[48%] mb-3 rounded-2xl overflow-hidden border border-white/10"
+            >
+              <BlurView intensity={10} tint="dark" className="flex-row items-center justify-between p-4 h-[72px] bg-indigo-500/5">
+                <View className="flex-1 mr-2">
+                  <Text className="text-indigo-300 font-bold text-xs uppercase">
+                    Create
+                  </Text>
+                  <Text className="text-gray-500 text-[9px] uppercase font-bold">
+                    0 available
+                  </Text>
+                </View>
+                
+                <View className="w-10 h-10 rounded-full border border-gray-600 items-center justify-center">
+                  <Ionicons name="add" size={24} color="#94a3b8" />
+                </View>
+              </BlurView>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </LinearGradient>
 
       {showSheet && <CreateCategorySheet onClose={() => setShowSheet(false)} />}
     </View>
