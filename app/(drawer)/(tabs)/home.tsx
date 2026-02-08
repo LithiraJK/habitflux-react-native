@@ -6,19 +6,25 @@ import { Habit } from "@/services/habitService";
 import { useCategoryStore } from "@/store/useCategoryStore";
 import { useHabitStore } from "@/store/useHabitStore";
 import { Ionicons } from "@expo/vector-icons";
+import { DrawerActions } from "@react-navigation/native";
 import { format, isAfter, startOfDay } from "date-fns";
-import { router, useFocusEffect } from "expo-router";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
+import { router, useFocusEffect, useNavigation } from "expo-router"; 
 import React, { useCallback, useMemo } from "react";
 import {
   ActivityIndicator,
   RefreshControl,
   ScrollView,
+  StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
+
   const {
     filteredHabits,
     fetchHabits,
@@ -30,24 +36,22 @@ const HomeScreen = () => {
 
   const { categories, defaultCategories, fetchCategories } = useCategoryStore();
 
-  // Combine default and user-defined categories
   const allCategories = useMemo(
     () => [...categories, ...defaultCategories],
-    [categories, defaultCategories],
+    [categories, defaultCategories]
   );
 
   useFocusEffect(
     useCallback(() => {
       fetchHabits();
       fetchCategories();
-    }, []),
+    }, [])
   );
 
-  // Re-filter habits when selected date changes
   useFocusEffect(
     useCallback(() => {
       getFilteredHabits();
-    }, [selectedDate]),
+    }, [selectedDate])
   );
 
   const progressPercentage = useMemo(() => {
@@ -56,7 +60,6 @@ const HomeScreen = () => {
     return Math.round((completedCount / filteredHabits.length) * 100);
   }, [filteredHabits]);
 
-  // Check if selected date is in the future
   const isFutureDate = useMemo(() => {
     return isAfter(startOfDay(selectedDate), startOfDay(new Date()));
   }, [selectedDate]);
@@ -64,125 +67,174 @@ const HomeScreen = () => {
   const getHabitStyle = (categoryId: string | undefined) => {
     if (!categoryId)
       return { icon: "leaf", color: Colors.dark.defaultCategory };
-
     const foundCategory = allCategories.find((cat) => cat.id === categoryId);
-
-    if (foundCategory) {
-      return {
-        icon: foundCategory.icon,
-        color: foundCategory.color,
-      };
-    }
-
-    return { icon: "leaf", color: Colors.dark.defaultCategory };
+    return foundCategory
+      ? { icon: foundCategory.icon, color: foundCategory.color }
+      : { icon: "leaf", color: Colors.dark.defaultCategory };
   };
 
   const getFrequencyLabel = (frequency: Habit["frequency"]) => {
-    if (!frequency) return "Daily";
-
-    if (frequency.type === "daily") {
-      return frequency.interval === 1
+    if (!frequency || frequency.type === "daily") {
+      return frequency?.interval === 1 || !frequency
         ? "Daily"
         : `Every ${frequency.interval} days`;
     }
-    if (frequency.type === "weekly") return "Weekly";
-    if (frequency.type === "monthly") return "Monthly";
-
-    return "Custom";
+    return frequency.type.charAt(0).toUpperCase() + frequency.type.slice(1);
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.dark.background }}>
-      <View className="mt-4 px-4 h-[100px] justify-center z-10">
-        <CalendarStrip />
-      </View>
+    <View className="flex-1">
+      <StatusBar barStyle="light-content" />
 
-      <ScrollView
-        className="flex-1 px-4"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
-        refreshControl={
-          <RefreshControl
-            refreshing={isHabitLoading}
-            onRefresh={() => {
-              fetchHabits();
-              fetchCategories();
-            }}
-            tintColor={Colors.dark.defaultCategory}
-          />
-        }
+      <LinearGradient
+        colors={["#0f172a", "#1e1b4b", "#0f172a"]}
+        className="flex-1"
       >
-        <View className="pt-2 pb-1">
-          <Text
-            style={{ color: Colors.dark.textSecondary }}
-            className="text-xs font-medium uppercase tracking-widest"
-          >
-            {format(selectedDate, "EEEE, d MMMM")}
-          </Text>
-        </View>
+        <View className="pt-14 px-6 pb-4 flex-row justify-between items-center">
+          <View className="flex-row items-center">
+            <TouchableOpacity
+              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              className="w-10 h-10 rounded-full bg-white/10 items-center justify-center border border-white/20 mr-4"
+            >
+              <Ionicons name="menu" size={24} color="white" />
+            </TouchableOpacity>
 
-        <View className="items-center mt-4 mb-6">
-          <ProgressRing percentage={progressPercentage} size={160} />
-        </View>
-
-        <View className="flex-1">
-          {isHabitLoading && filteredHabits.length === 0 ? (
-            <ActivityIndicator
-              size="large"
-              color={Colors.dark.primary}
-              className="mt-10"
-            />
-          ) : filteredHabits.length === 0 ? (
-            <View className="items-center mt-10 opacity-50">
-              <Ionicons
-                name="list"
-                size={48}
-                color={Colors.dark.textSecondary}
-              />
-              <Text
-                style={{ color: Colors.dark.textSecondary }}
-                className="mt-2"
-              >
-                No habits for this date
+            <View>
+              <Text className="text-gray-400 text-[10px] uppercase tracking-[3px] font-bold">
+                {format(selectedDate, "EEEE, d MMM")}
               </Text>
-              <Text
-                style={{ color: Colors.dark.textTertiary }}
-                className="text-xs"
-              >
-                Tap + to add one
-              </Text>
+              <Text className="text-white text-2xl font-black">My Habits</Text>
             </View>
-          ) : (
-            filteredHabits.map((habit) => {
-              const { icon, color } = getHabitStyle(habit.category);
+          </View>
 
-              return (
-                <HabitItem
-                  key={habit.id}
-                  title={habit.title}
-                  goal={getFrequencyLabel(habit.frequency)}
-                  icon={icon as any}
-                  color={color}
-                  completed={habit.isComplete}
-                  disabled={isFutureDate}
-                  onToggle={() =>
-                    toggleHabitStatus(habit.id!, habit.isComplete)
-                  }
-                />
-              );
-            })
-          )}
+          <TouchableOpacity className="w-10 h-10 rounded-full bg-white/10 items-center justify-center border border-white/20">
+            <Ionicons name="notifications-outline" size={20} color="white" />
+          </TouchableOpacity>
         </View>
-      </ScrollView>
 
-      <TouchableOpacity
-        style={{ backgroundColor: Colors.dark.primary }}
-        className="absolute bottom-6 right-6 w-16 h-16 rounded-2xl items-center justify-center shadow-lg z-50"
-        onPress={() => router.push("/create-habit/step1" as any)}
-        activeOpacity={0.8}
-      >
-        <Ionicons name="add" size={32} color={Colors.dark.text} />
-      </TouchableOpacity>
+        {/* Calendar Strip Container */}
+        <View className="px-4 mb-4">
+          <BlurView
+            intensity={10}
+            tint="dark"
+            className="rounded-3xl overflow-hidden border border-white/10 p-2"
+          >
+            <CalendarStrip />
+          </BlurView>
+        </View>
+
+        <ScrollView
+          className="flex-1 px-6"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 120 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={isHabitLoading}
+              onRefresh={() => {
+                fetchHabits();
+                fetchCategories();
+              }}
+              tintColor={Colors.dark.primary}
+            />
+          }
+        >
+          {/* Progress Card - Glassmorphism */}
+          <View className="mb-8 overflow-hidden rounded-[32px] border border-white/10 shadow-2xl">
+            <BlurView
+              intensity={30}
+              tint="dark"
+              className="p-6 items-center flex-row justify-between"
+            >
+              <View className="flex-1 pr-4">
+                <Text className="text-white text-xl font-bold mb-1">
+                  Today's Progress
+                </Text>
+                <Text className="text-gray-400 text-sm">
+                  {progressPercentage === 100
+                    ? "Perfect! All habits done! 🚀"
+                    : `${
+                        filteredHabits.filter((h) => h.isComplete).length
+                      } of ${filteredHabits.length} completed`}
+                </Text>
+              </View>
+              <ProgressRing
+                percentage={progressPercentage}
+                size={90}
+                strokeWidth={10}
+              />
+            </BlurView>
+          </View>
+
+          {/* Habits List Header */}
+          <View className="flex-row justify-between items-end mb-4 px-1">
+            <Text className="text-white text-lg font-bold">Today's Tasks</Text>
+            <Text className="text-indigo-400 text-xs font-semibold">
+              {filteredHabits.length} Total
+            </Text>
+          </View>
+
+          {/* Habits Mapping */}
+          <View className="space-y-4">
+            {isHabitLoading && filteredHabits.length === 0 ? (
+              <ActivityIndicator
+                size="large"
+                color={Colors.dark.primary}
+                className="mt-10"
+              />
+            ) : filteredHabits.length === 0 ? (
+              <BlurView
+                intensity={10}
+                className="rounded-3xl p-10 items-center border border-white/5 mt-4"
+              >
+                <Ionicons
+                  name="sparkles-outline"
+                  size={40}
+                  color={Colors.dark.textTertiary}
+                />
+                <Text className="text-white text-base font-medium mt-3">
+                  All clear for today!
+                </Text>
+                <Text className="text-gray-500 text-xs text-center mt-1">
+                  Tap the plus button to start a new habit
+                </Text>
+              </BlurView>
+            ) : (
+              filteredHabits.map((habit) => {
+                const { icon, color } = getHabitStyle(habit.category);
+                return (
+                  <View key={habit.id} className="mb-3">
+                    <HabitItem
+                      title={habit.title}
+                      goal={getFrequencyLabel(habit.frequency)}
+                      icon={icon as any}
+                      color={color}
+                      completed={habit.isComplete}
+                      disabled={isFutureDate}
+                      onToggle={() =>
+                        toggleHabitStatus(habit.id!, habit.isComplete)
+                      }
+                    />
+                  </View>
+                );
+              })
+            )}
+          </View>
+        </ScrollView>
+
+        {/* Floating Action Button (FAB) */}
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => router.push("/create-habit/step1" as any)}
+          className="absolute bottom-28 right-6 shadow-2xl shadow-indigo-500/50 overflow-hidden rounded-2xl"
+        >
+          <LinearGradient
+            colors={["#6366f1", "#4f46e5"]}
+            className="w-16 h-16 items-center justify-center"
+          >
+            <Ionicons name="add" size={32} color="white" />
+          </LinearGradient>
+        </TouchableOpacity>
+      </LinearGradient>
     </View>
   );
 };

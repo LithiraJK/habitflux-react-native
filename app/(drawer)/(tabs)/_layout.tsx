@@ -1,15 +1,15 @@
 import { Colors } from "@/constants/theme";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { BlurView } from "expo-blur";
 import { Tabs, useNavigation } from "expo-router";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Platform } from "react-native";
 
 const tabs = [
   { name: "home", title: "Today", icon: "calendar-check" },
   { name: "habits", title: "Habits", icon: "tasks" },
-  { name: "categories", title: "Categories", icon: "th" },
+  { name: "categories", title: "Categories", icon: "th-large" },
   { name: "timer", title: "Timer", icon: "stopwatch" },
 ] as const;
 
@@ -19,53 +19,47 @@ const TabsLayout = () => {
   return (
     <Tabs
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
 
         tabBarActiveTintColor: Colors.dark.primary,
         tabBarInactiveTintColor: Colors.dark.textTertiary,
         tabBarShowLabel: true,
 
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "600",
-          marginTop: 2,
+          fontSize: 11,
+          fontWeight: "700",
+          marginBottom: Platform.OS === "ios" ? 5 : 10, // iOS සඳහා පොඩි ඉඩක්
         },
 
         tabBarStyle: {
-          left: 20,
-          right: 20,
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
-          borderTopWidth: 0,
-          elevation: 5,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.1,
-          shadowRadius: 10,
+          position: "absolute", // Glass effect එක Content එක උඩින් පෙන්වීමට
+          bottom: 0, // පහළටම සවි කරන්න
+          left: 0,
+          right: 0,
+          height: Platform.OS === "ios" ? 85 : 70, // iOS Safe Area එකට ඉඩ දෙන්න
+          borderTopWidth: 1, // උඩින් පමණක් ඉරක්
+          borderTopColor: "rgba(255, 255, 255, 0.1)",
+          borderWidth: 0, // වටේම Border එක අයින් කරන්න
           backgroundColor: "transparent",
-          paddingTop: 10,
-          paddingBottom: 10,
-          height: 75,
+          elevation: 0,
         },
 
         tabBarItemStyle: {
-          paddingVertical: 25,
+          height: 60,
+          paddingTop: 10,
         },
 
+        // Dark Glass Effect (Full Width)
         tabBarBackground: () => (
           <BlurView
-            tint="light"
-            intensity={80}
-            style={StyleSheet.absoluteFill}
+            tint="dark"
+            intensity={40}
+            style={{
+              ...StyleSheet.absoluteFillObject,
+              backgroundColor: "rgba(15, 23, 42, 0.8)", // පසුබිම මඳක් තද කරන්න (පාට පෙවෙන්න)
+              // borderRadius ඉවත් කළා
+            }}
           />
-        ),
-        headerLeft: () => (
-          <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
-            style={{ marginLeft: 16 }}
-          >
-            <Ionicons name="menu" size={28} color={Colors.dark.primary} />
-          </TouchableOpacity>
         ),
       }}
     >
@@ -75,20 +69,25 @@ const TabsLayout = () => {
           name={name}
           options={{
             title: title,
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color, focused }) => (
               <View
                 style={{
                   backgroundColor: focused
                     ? `${Colors.dark.primary}20`
                     : "transparent",
-                  borderRadius: 24,
-                  width: 64,
-                  height: 34,
+                  borderRadius: 16,
+                  width: 55,
+                  height: 32,
                   alignItems: "center",
                   justifyContent: "center",
+                  marginTop: 5,
                 }}
               >
-                <FontAwesome5 name={icon} color={color} size={24} />
+                <FontAwesome5 
+                  name={icon} 
+                  color={color} 
+                  size={focused ? 20 : 18} 
+                />
               </View>
             ),
           }}

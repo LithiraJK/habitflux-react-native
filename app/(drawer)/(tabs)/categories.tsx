@@ -2,16 +2,23 @@ import CategoryItem from "@/components/ui/CategoryItem";
 import CreateCategorySheet from "@/components/ui/CreateCategorySheet";
 import { Colors } from "@/constants/theme";
 import { useCategoryStore } from "@/store/useCategoryStore";
+import { Ionicons } from "@expo/vector-icons";
+import { DrawerActions } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
+  StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { BlurView } from "expo-blur";
 
 const CategoriesScreen = () => {
+  const navigation = useNavigation();
   const {
     categories,
     defaultCategories,
@@ -37,34 +44,73 @@ const CategoriesScreen = () => {
   };
 
   return (
-    <View
-      style={{ flex: 1, backgroundColor: Colors.dark.background }}
-      className="px-4 pt-6"
-    >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
+    <View className="flex-1">
+      <StatusBar barStyle="light-content" />
+      
+      {/* Background Gradient */}
+      <LinearGradient
+        colors={["#0f172a", "#1e1b4b", "#0f172a"]}
+        className="flex-1"
       >
-        {/* Custom Categories Section */}
-        <View className="mb-8">
-          <Text
-            style={{ color: Colors.dark.textSecondary }}
-            className="font-bold mb-1 text-base"
-          >
-            Custom categories
-          </Text>
-          <Text
-            style={{ color: Colors.dark.textTertiary }}
-            className="text-xs mb-6"
-          >
-            {categories.length} available
-          </Text>
+        {/* Header Section */}
+        <View className="pt-14 px-6 pb-4 flex-row items-center justify-between z-10">
+          <View className="flex-row items-center">
+            <TouchableOpacity 
+              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              className="w-10 h-10 rounded-full bg-white/10 items-center justify-center border border-white/20 mr-4"
+            >
+              <Ionicons name="menu" size={24} color="white" />
+            </TouchableOpacity>
+            
+            <View>
+              <Text className="text-gray-400 text-[10px] uppercase tracking-[3px] font-bold">
+                Organize
+              </Text>
+              <Text className="text-white text-2xl font-black">Categories</Text>
+            </View>
+          </View>
+        </View>
 
-          {loading ? (
-            <ActivityIndicator color={Colors.dark.defaultCategory} />
-          ) : (
-            <View className="flex-row flex-wrap justify-start">
-              {categories.map((item) => (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 20 }}
+        >
+          {/* Custom Categories Section */}
+          <View className="mb-8">
+            <View className="flex-row justify-between items-end mb-4 px-1">
+              <Text className="text-white text-lg font-bold">My Custom</Text>
+              <Text className="text-indigo-400 text-xs font-semibold">{categories.length} Items</Text>
+            </View>
+
+            {loading ? (
+              <ActivityIndicator color={Colors.dark.primary} size="large" className="mt-4" />
+            ) : categories.length === 0 ? (
+              <BlurView intensity={10} tint="dark" className="p-8 rounded-3xl border border-white/10 items-center">
+                <Ionicons name="layers-outline" size={32} color="gray" />
+                <Text className="text-gray-500 mt-2 text-sm">No custom categories yet</Text>
+              </BlurView>
+            ) : (
+              <View className="flex-row flex-wrap gap-3">
+                {categories.map((item) => (
+                  <CategoryItem
+                    key={item.id}
+                    item={item}
+                    onPress={() => handleEditCategory(item)}
+                  />
+                ))}
+              </View>
+            )}
+          </View>
+
+          {/* Default Categories Section */}
+          <View>
+            <View className="flex-row justify-between items-end mb-4 px-1">
+              <Text className="text-white text-lg font-bold">Defaults</Text>
+              <Text className="text-gray-500 text-xs font-semibold">{defaultCategories.length} Items</Text>
+            </View>
+
+            <View className="flex-row flex-wrap gap-3">
+              {defaultCategories.map((item) => (
                 <CategoryItem
                   key={item.id}
                   item={item}
@@ -72,53 +118,25 @@ const CategoriesScreen = () => {
                 />
               ))}
             </View>
-          )}
-        </View>
-
-        {/* Default Categories Section */}
-        <View>
-          <Text
-            style={{ color: Colors.dark.textSecondary }}
-            className="font-bold mb-1 text-base"
-          >
-            Default categories
-          </Text>
-          <Text
-            style={{ color: Colors.dark.textTertiary }}
-            className="text-xs mb-6"
-          >
-            {defaultCategories.length} available
-          </Text>
-
-          <View className="flex-row flex-wrap justify-start">
-            {defaultCategories.map((item) => (
-              <CategoryItem
-                key={item.id}
-                item={item}
-                onPress={() => handleEditCategory(item)} // after I will implement premium check
-              />
-            ))}
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
 
-      <View className="absolute bottom-6 left-4 right-4">
+        {/* Gradient Floating Action Button (FAB) */}
         <TouchableOpacity
-          style={{ backgroundColor: Colors.dark.primary }}
-          className="py-4 rounded-2xl items-center shadow-2xl"
-          activeOpacity={0.8}
+          activeOpacity={0.9}
           onPress={handleAddNewCategory}
+          className="absolute bottom-28 right-6 shadow-2xl shadow-indigo-500/50 overflow-hidden rounded-2xl"
         >
-          <Text
-            style={{ color: Colors.dark.text }}
-            className="font-bold text-lg tracking-widest uppercase"
+          <LinearGradient
+            colors={["#6366f1", "#4f46e5"]}
+            className="w-16 h-16 items-center justify-center"
           >
-            New Category
-          </Text>
+            <Ionicons name="add" size={32} color="white" />
+          </LinearGradient>
         </TouchableOpacity>
-      </View>
 
-      {showSheet && <CreateCategorySheet onClose={() => setShowSheet(false)} />}
+        {showSheet && <CreateCategorySheet onClose={() => setShowSheet(false)} />}
+      </LinearGradient>
     </View>
   );
 };

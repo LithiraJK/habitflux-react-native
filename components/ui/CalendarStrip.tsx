@@ -1,9 +1,9 @@
-import { Colors } from "@/constants/theme";
 import { useHabitStore } from "@/store/useHabitStore";
 import { generateInfiniteDates } from "@/utils/dateHelpers";
 import { isSameDay } from "date-fns";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef } from "react";
-import { FlatList, Text, TouchableOpacity } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 const ITEM_WIDTH = 68;
 
@@ -15,7 +15,7 @@ const CalendarStrip = () => {
 
   useEffect(() => {
     const todayIndex = dates.findIndex((date) =>
-      isSameDay(date.fullDate, new Date()),
+      isSameDay(date.fullDate, new Date())
     );
 
     if (todayIndex !== -1) {
@@ -23,7 +23,7 @@ const CalendarStrip = () => {
         flatListRef.current?.scrollToIndex({
           index: todayIndex,
           animated: false,
-          viewPosition: 0.7,
+          viewPosition: 0.5,
         });
       }, 100);
     }
@@ -55,40 +55,42 @@ const CalendarStrip = () => {
       maxToRenderPerBatch={10}
       windowSize={21}
       removeClippedSubviews={true}
+      contentContainerStyle={{ paddingHorizontal: 10 }}
       renderItem={({ item }) => {
         const isSelected = isSameDay(item.fullDate, selectedDate);
 
         return (
           <TouchableOpacity
             onPress={() => setSelectedDate(item.fullDate)}
-            style={{
-              backgroundColor: isSelected
-                ? Colors.dark.primary
-                : Colors.dark.cardBackground,
-              borderColor: isSelected
-                ? Colors.dark.primary
-                : Colors.dark.border,
-            }}
-            className="items-center justify-center w-[60px] h-20 mx-1 rounded-2xl border"
+            activeOpacity={0.7}
+            className="mx-1"
           >
-            <Text
-              style={{
-                color: isSelected
-                  ? Colors.dark.text
-                  : Colors.dark.textSecondary,
-              }}
-              className="text-xs font-medium"
-            >
-              {item.dayName}
-            </Text>
-            <Text
-              style={{
-                color: isSelected ? Colors.dark.text : Colors.dark.textTertiary,
-              }}
-              className="text-lg font-bold mt-1"
-            >
-              {item.dateNum}
-            </Text>
+            {isSelected ? (
+            
+              <LinearGradient
+                colors={["#6366f1", "#4f46e5"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                className="w-[60px] h-20 rounded-2xl overflow-hidden items-center justify-center shadow-lg shadow-indigo-500/40"
+              >
+                <Text className="text-indigo-100 text-[10px] font-bold uppercase tracking-wider mb-1">
+                  {item.dayName}
+                </Text>
+                <Text className="text-white text-xl font-black">
+                  {item.dateNum}
+                </Text>
+              </LinearGradient>
+            ) : (
+              
+              <View className="w-[60px] h-20 rounded-2xl items-center justify-center bg-white/5 border border-white/10">
+                <Text className="text-gray-400 text-[10px] font-medium uppercase tracking-wider mb-1">
+                  {item.dayName}
+                </Text>
+                <Text className="text-gray-300 text-xl font-bold">
+                  {item.dateNum}
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
         );
       }}

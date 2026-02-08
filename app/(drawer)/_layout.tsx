@@ -1,6 +1,5 @@
 import CustomDrawerContent from "@/components/ui/CustomDrawer";
-import { Colors } from "@/constants/theme";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Drawer } from "expo-router/drawer";
 import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -12,24 +11,30 @@ const DrawerLayout = () => {
         drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
           headerShown: false,
-          drawerActiveTintColor: Colors.dark.primary,
-          drawerActiveBackgroundColor: Colors.dark.primary + "20",
-          drawerInactiveTintColor: Colors.dark.textSecondary,
-          drawerLabelStyle: {
-            marginLeft: 8,
-            fontWeight: "500",
-            fontSize: 16,
+          
+          // Drawer Styles
+          drawerType: "slide",
+          drawerStyle: {
+            backgroundColor: "#0f172a",
+            width: 300,
           },
+          overlayColor: "rgba(0,0,0,0.7)",
+          
+          drawerActiveTintColor: "#fff",
+          drawerActiveBackgroundColor: "#6366f1",
+          
+          drawerInactiveTintColor: "#94a3b8",
+          drawerInactiveBackgroundColor: "transparent",
+
           drawerItemStyle: {
             borderRadius: 16,
-            marginHorizontal: 12,
-            marginVertical: 2,
+            marginBottom: 8,
             paddingHorizontal: 12,
-            paddingVertical: 8,
           },
-          drawerStyle: {
-            width: 280,
-            backgroundColor: Colors.dark.background,
+          drawerLabelStyle: {
+            fontWeight: "600",
+            fontSize: 15,
+            marginLeft: -10,
           },
         }}
       >
@@ -38,7 +43,7 @@ const DrawerLayout = () => {
           options={{
             drawerLabel: "Dashboard",
             drawerIcon: ({ color, size }) => (
-              <FontAwesome5 name="th-large" color={color} size={size} />
+              <Ionicons name="grid-outline" color={color} size={22} />
             ),
           }}
         />
@@ -48,7 +53,7 @@ const DrawerLayout = () => {
           options={{
             drawerLabel: "Settings",
             drawerIcon: ({ color, size }) => (
-              <FontAwesome5 name="sliders-h" color={color} size={size} />
+              <Ionicons name="settings-outline" color={color} size={22} />
             ),
           }}
         />
