@@ -1,5 +1,7 @@
 import { Colors } from "@/constants/theme";
 import { Habit } from "@/services/habitService";
+import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import React, { useMemo } from "react";
 import { ScrollView, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
@@ -9,155 +11,107 @@ interface StatisticsTabProps {
 }
 
 const StatisticsTab = ({ habit }: StatisticsTabProps) => {
-  // Calculate completion rate
   const completionRate = useMemo(() => {
     if (!habit.startDate) return 0;
-
     const start = new Date(habit.startDate);
     const now = new Date();
-
     const diffTime = Math.abs(now.getTime() - start.getTime());
     const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
-
     const rate = Math.round((habit.totalCompleted / totalDays) * 100);
-    return rate > 100 ? 100 : rate;
+    return Math.min(rate, 100);
   }, [habit]);
 
-  // SVG Circle calculations
-  const size = 160;
-  const strokeWidth = 15;
+  const size = 180;
+  const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  const strokeDashoffset =
-    circumference - (completionRate / 100) * circumference;
+  const strokeDashoffset = circumference - (completionRate / 100) * circumference;
 
-  // Helper component for statistics rows
-  const StatRow = ({
-    label,
-    value,
-  }: {
-    label: string;
-    value: string | number;
-  }) => (
-    <View className="flex-row justify-between py-4 border-b border-gray-800 last:border-0">
-      <Text style={{ color: Colors.dark.textSecondary }} className="text-base">
-        {label}
-      </Text>
-      <Text style={{ color: Colors.dark.text }} className="font-bold text-base">
-        {value}
-      </Text>
+  const StatBox = ({ label, value, icon, color }: any) => (
+    <View className="flex-1 rounded-3xl overflow-hidden border border-white/10">
+      <BlurView intensity={20} tint="dark" className="p-5 items-center">
+        <View className="w-10 h-10 rounded-2xl bg-white/5 items-center justify-center mb-2 border border-white/5">
+          <Ionicons name={icon} size={20} color={color} />
+        </View>
+        <Text className="text-white text-2xl font-black">{value}</Text>
+        <Text className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">{label}</Text>
+      </BlurView>
     </View>
   );
 
   return (
-    <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
-      <View className="items-center my-8">
-        <View className="bg-gray-800 px-3 py-1 rounded-full mb-6">
-          <Text
-            style={{ color: Colors.dark.textSecondary }}
-            className="text-xs font-bold uppercase tracking-widest"
-          >
-            Habit Score
-          </Text>
-        </View>
-
-        <View className="items-center justify-center">
-          <Svg width={size} height={size}>
-            <Circle
-              cx={size / 2}
-              cy={size / 2}
-              r={radius}
-              stroke={Colors.dark.border}
-              strokeWidth={strokeWidth}
-              fill="transparent"
-            />
-
-            <Circle
-              cx={size / 2}
-              cy={size / 2}
-              r={radius}
-              stroke={Colors.dark.primary}
-              strokeWidth={strokeWidth}
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-              fill="transparent"
-              rotation="-90"
-              origin={`${size / 2}, ${size / 2}`}
-            />
-          </Svg>
-          <Text
-            style={{ color: Colors.dark.text }}
-            className="absolute text-4xl font-bold"
-          >
-            {completionRate}
-          </Text>
-        </View>
-      </View>
-
-      {/* Streak Statistics Cards */}
-      <View
-        style={{ backgroundColor: Colors.dark.cardBackground }}
-        className="p-6 rounded-3xl border border-gray-800 mb-6"
-      >
-        <View className="items-center mb-4">
-          <Text
-            style={{ color: Colors.dark.textTertiary }}
-            className="text-xs bg-gray-800 px-2 py-1 rounded font-medium"
-          >
-            STREAK
-          </Text>
-        </View>
-        <View className="flex-row justify-between mt-2">
-          <View className="items-center flex-1 border-r border-gray-700">
-            <Text
-              style={{ color: Colors.dark.textSecondary }}
-              className="text-xs mb-1 uppercase tracking-wider"
-            >
-              Current
-            </Text>
-            <Text
-              style={{ color: Colors.dark.primary }}
-              className="text-xl font-bold"
-            >
-              {habit.currentStreak || 0} DAYS
-            </Text>
+    <ScrollView 
+      className="flex-1 px-6" 
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 40 }}
+    >
+      <View className="mt-4 mb-6 rounded-[32px] overflow-hidden border border-white/10">
+        <BlurView intensity={20} tint="dark" className="p-8 items-center">
+          <Text className="text-indigo-400 text-[10px] font-black uppercase tracking-[4px] mb-6">Habit Score</Text>
+          
+          <View className="items-center justify-center">
+            <Svg width={size} height={size}>
+              <Circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                stroke="rgba(255, 255, 255, 0.05)"
+                strokeWidth={strokeWidth}
+                fill="transparent"
+              />
+              <Circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                stroke="#818cf8"
+                strokeWidth={strokeWidth}
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                fill="transparent"
+                rotation="-90"
+                origin={`${size / 2}, ${size / 2}`}
+              />
+            </Svg>
+            <View className="absolute items-center justify-center">
+              <Text className="text-white text-5xl font-black">{completionRate}%</Text>
+              <Text className="text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-1">Success</Text>
+            </View>
           </View>
-          <View className="items-center flex-1">
-            <Text
-              style={{ color: Colors.dark.textSecondary }}
-              className="text-xs mb-1 uppercase tracking-wider"
-            >
-              Best
-            </Text>
-            <Text
-              style={{ color: Colors.dark.primary }}
-              className="text-xl font-bold"
-            >
-              {habit.bestStreak || 0} DAYS
-            </Text>
+        </BlurView>
+      </View>
+
+      <View className="flex-row space-x-4 mb-6">
+        <StatBox label="Total" value={habit.totalCompleted || 0} icon="checkmark-done" color="#34d399" />
+        <StatBox label="Best" value={habit.bestStreak || 0} icon="trophy" color="#fbbf24" />
+      </View>
+
+      <View className="rounded-[32px] overflow-hidden border border-white/10">
+        <BlurView intensity={20} tint="dark" className="p-6">
+          <Text className="text-white font-bold text-lg mb-4">Detailed Insights</Text>
+          
+          <View className="space-y-4">
+            <View className="flex-row justify-between items-center py-3 border-b border-white/5">
+                <Text className="text-gray-400 font-medium">Daily Target</Text>
+                <Text className="text-white font-bold">{habit.dailyTarget} {habit.bestStreak || "times"}</Text>
+            </View>
+
+            <View className="flex-row justify-between items-center py-3 border-b border-white/5">
+                <Text className="text-gray-400 font-medium">Current Streak</Text>
+                <View className="flex-row items-center">
+                    <Ionicons name="flame" size={14} color="#f87171" style={{ marginRight: 4 }} />
+                    <Text className="text-white font-bold">{habit.currentStreak} Days</Text>
+                </View>
+            </View>
+
+            <View className="flex-row justify-between items-center py-3">
+                <Text className="text-gray-400 font-medium">Evaluation Type</Text>
+                <Text className="text-indigo-300 font-black uppercase text-[10px]">{habit.type.replace('_', ' ')}</Text>
+            </View>
           </View>
-        </View>
+        </BlurView>
       </View>
 
-      {/* Completion Breakdown */}
-      <View
-        style={{ backgroundColor: Colors.dark.cardBackground }}
-        className="p-5 rounded-3xl border border-gray-800 mb-10"
-      >
-        <View className="items-center mb-2">
-          <Text
-            style={{ color: Colors.dark.textTertiary }}
-            className="text-xs bg-gray-800 px-2 py-1 rounded font-medium"
-          >
-            TIMES COMPLETED
-          </Text>
-        </View>
-
-        <StatRow label="Current Streak" value={habit.currentStreak || 0} />
-        <StatRow label="Total Completed" value={habit.totalCompleted || 0} />
-        <StatRow label="Target per day" value={habit.dailyTarget || 1} />
-      </View>
     </ScrollView>
   );
 };

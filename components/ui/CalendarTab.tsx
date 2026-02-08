@@ -1,89 +1,62 @@
 import { Habit } from "@/services/habitService";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useMemo } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { BlurView } from "expo-blur";
+import React from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 
-interface CalendarTabProps {
-  habit: Habit;
-}
-
-const CalendarTab = ({ habit }: CalendarTabProps) => {
-  const markedDates = useMemo(() => {
-    const dates: any = {};
-    const history = habit.history || {};
-
-    Object.keys(history).forEach((date) => {
-      const record = history[date];
-      const status = record.status;
-
-      let color = "#374151";
-
-      if (status === "completed") color = "#22C55E";
-      if (status === "failed") color = "#EF4444";
-      if (status === "skipped") color = "#F59E0B";
-
-      dates[date] = {
-        selected: true,
-        selectedColor: color,
-        disableTouchEvent: true,
-      };
-    });
-
-    return dates;
-  }, [habit]);
-
+const CalendarTab = ({ habit }: { habit: Habit }) => {
   return (
-    <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
-      {/* Calendar View */}
-      <View className="mt-4 mb-6">
-        <Calendar
-          theme={{
-            backgroundColor: "#121212",
-            calendarBackground: "#121212",
-            textSectionTitleColor: "#6B7280",
-            selectedDayBackgroundColor: "#00adf5",
-            selectedDayTextColor: "#ffffff",
-            todayTextColor: "#8B5CF6",
-            dayTextColor: "#ffffff",
-            textDisabledColor: "#374151",
-            monthTextColor: "#ffffff",
-            arrowColor: "#8B5CF6",
-            textDayFontWeight: "300",
-            textMonthFontWeight: "bold",
-            textDayFontSize: 14,
-          }}
-          markedDates={markedDates}
-        />
+    <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+      
+      
+      <View className="rounded-[32px] overflow-hidden border border-white/10 mb-6">
+        <BlurView intensity={20} tint="dark" className="p-4">
+          <Calendar
+            theme={{
+              backgroundColor: "transparent",
+              calendarBackground: "transparent",
+              textSectionTitleColor: "#94a3b8",
+              dayTextColor: "#ffffff",
+              todayTextColor: "#818cf8",
+              monthTextColor: "#ffffff",
+              arrowColor: "#818cf8",
+              textDayFontWeight: "600",
+              textMonthFontWeight: "900",
+            }}
+          />
+        </BlurView>
       </View>
 
-      {/* Current Streak Display */}
-      <View className="bg-[#1C1C1E] p-4 rounded-2xl border border-gray-800 items-center mb-6">
-        <View className="bg-gray-800 px-3 py-1 rounded-full mb-2">
-          <Text className="text-gray-400 text-xs font-medium">
-            Current Streak
-          </Text>
-        </View>
-        <View className="flex-row items-end">
-          <Text className="text-[#8B5CF6] text-3xl font-bold">
-            {habit.currentStreak || 0}
-          </Text>
-          <Text className="text-gray-500 text-base mb-1 ml-1 font-medium">
-            DAYS
-          </Text>
-        </View>
+      {/* 2. Streak Row */}
+      <View className="flex-row space-x-4 mb-6">
+        <BlurView intensity={20} tint="dark" className="flex-1 p-5 rounded-[28px] border border-white/10 items-center">
+            <Ionicons name="flame" size={24} color="#818cf8" />
+            <Text className="text-white text-3xl font-black mt-2">{habit.currentStreak || 0}</Text>
+            <Text className="text-gray-500 text-[10px] font-bold uppercase tracking-tighter">Current Streak</Text>
+        </BlurView>
+        <BlurView intensity={20} tint="dark" className="flex-1 p-5 rounded-[28px] border border-white/10 items-center">
+            <Ionicons name="trophy" size={22} color="#34d399" />
+            <Text className="text-white text-3xl font-black mt-2">{habit.bestStreak || 0}</Text>
+            <Text className="text-gray-500 text-[10px] font-bold uppercase tracking-tighter">Best Streak</Text>
+        </BlurView>
       </View>
 
-      {/* Notes Section Placeholder */}
-      <View className="items-center mb-8">
-        <View className="bg-gray-800 px-3 py-1 rounded-full mb-4">
-          <Text className="text-gray-400 text-xs font-medium">Notes</Text>
-        </View>
-        <View className="flex-row items-center opacity-50">
-          <Ionicons name="document-text-outline" size={20} color="gray" />
-          <Text className="text-gray-500 ml-2">No notes for this month</Text>
-        </View>
-      </View>
+      {/* 3. Monthly Notes Section */}
+      <BlurView intensity={20} tint="dark" className="p-6 rounded-[32px] border border-white/10">
+          <View className="flex-row items-center justify-between mb-6">
+              <View className="flex-row items-center">
+                <Ionicons name="document-text" size={18} color="#818cf8" />
+                <Text className="text-white font-bold ml-2">Monthly Notes</Text>
+              </View>
+              <TouchableOpacity className="bg-white/10 px-3 py-1 rounded-lg"><Text className="text-white text-[10px] font-bold">VIEW ALL</Text></TouchableOpacity>
+          </View>
+          <Text className="text-gray-500 text-center italic text-xs mb-6">"Every small step counts towards a bigger change."</Text>
+          <TouchableOpacity className="bg-indigo-500/10 py-3 rounded-2xl border border-indigo-500/20 items-center">
+              <Text className="text-indigo-400 font-black text-xs uppercase">+ Add Daily Note</Text>
+          </TouchableOpacity>
+      </BlurView>
+
     </ScrollView>
   );
 };
