@@ -49,11 +49,11 @@ const DrawerLayout = () => {
         />
 
         <Drawer.Screen
-          name="settings"
+          name="reminders"
           options={{
-            drawerLabel: "Settings",
+            drawerLabel: "Reminders",
             drawerIcon: ({ color, size }) => (
-              <Ionicons name="settings-outline" color={color} size={22} />
+              <Ionicons name="notifications-outline" color={color} size={22} />
             ),
           }}
         />
