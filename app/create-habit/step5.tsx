@@ -4,7 +4,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import {
+  Alert,
+  Linking,
   Modal,
+  Platform,
   ScrollView,
   Switch,
   Text,
@@ -144,10 +147,23 @@ const Reminders = () => {
             );
           } else {
             console.warn("Notification permissions not granted");
-            showToast(
-              "info",
-              "Note",
-              "Enable notifications in settings to receive reminders.",
+            Alert.alert(
+              "Permission Required",
+              "Notifications are blocked. Please enable them in your device settings:\n\n" +
+                "Settings → Apps → HabitFlux → Notifications",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Open Settings",
+                  onPress: () => {
+                    if (Platform.OS === "ios") {
+                      Linking.openURL("app-settings:");
+                    } else {
+                      Linking.openSettings();
+                    }
+                  },
+                },
+              ],
             );
           }
         } catch (notificationError: any) {

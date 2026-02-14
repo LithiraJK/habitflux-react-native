@@ -20,9 +20,9 @@ A modern, feature-rich habit tracking application built with React Native and Ex
 
 Download the latest version of HabitFlux for Android:
 
-[![Download APK](https://img.shields.io/badge/Download-APK-green?style=for-the-badge&logo=android)](https://expo.dev/artifacts/eas/8rV7hkpZXkWbbqpv78hGE4.apk)
+[![Download APK](https://img.shields.io/badge/Download-APK-green?style=for-the-badge&logo=android)](https://expo.dev/artifacts/eas/btSqxRsQEaygctqEQaqy5m.apk)
 
-**Direct Link:** [HabitFlux.apk](https://expo.dev/artifacts/eas/8rV7hkpZXkWbbqpv78hGE4.apk)
+**Direct Link:** [HabitFlux.apk](https://expo.dev/artifacts/eas/btSqxRsQEaygctqEQaqy5m.apk)
 
 > **Note**: You may need to enable "Install from Unknown Sources" in your Android settings to install the APK.
 
