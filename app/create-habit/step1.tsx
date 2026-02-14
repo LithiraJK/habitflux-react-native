@@ -1,12 +1,11 @@
 import CreateCategorySheet from "@/components/ui/CreateCategorySheet";
-import { Colors } from "@/constants/theme";
 import { useCategoryStore } from "@/store/useCategoryStore";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
-import React, { useState } from "react";
+import { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View, StatusBar } from "react-native";
 
 const CategorySelection = () => {

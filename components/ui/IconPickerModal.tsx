@@ -12,6 +12,14 @@ const ICONS = [
   "fitness",
   "book",
   "briefcase",
+  "text",
+  "menu",
+  "bug",
+  "camera",
+  "folder",
+  "flag",
+  "laptop",
+  "mail"
 ];
 
 export const IconPickerModal = ({ visible, onSelect, onClose }: any) => (

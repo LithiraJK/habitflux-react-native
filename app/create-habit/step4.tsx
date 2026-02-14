@@ -2,7 +2,7 @@ import { Colors } from "@/constants/theme";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
 import { showToast } from "@/utils/notifications";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 

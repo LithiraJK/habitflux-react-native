@@ -13,6 +13,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { NotificationService } from "./notificationService";
 
 export interface Habit {
   id?: string;
@@ -55,6 +56,7 @@ export interface Habit {
   bestStreak: number;
   totalCompleted: number;
   isArchived: boolean;
+  notificationIds?: string[];
 
   createdAt: string | Timestamp;
 }
@@ -213,8 +215,20 @@ export const deleteHabit = async (id: string) => {
   const snap = await getDoc(ref);
 
   if (!snap.exists()) throw new Error("Habit not found");
+  const data = snap.data() as Habit;
 
-  if (snap.data().userId !== user.uid) throw new Error("Unauthorized");
+  if (data.userId !== user.uid) throw new Error("Unauthorized");
+
+  // Cancel any scheduled notifications for this habit
+  try {
+    if (data.notificationIds && data.notificationIds.length > 0) {
+      for (const notiId of data.notificationIds) {
+        await NotificationService.cancel(notiId);
+      }
+    }
+  } catch (error) {
+    console.error("Error cancelling notifications during deletion:", error);
+  }
 
   await deleteDoc(ref);
 };

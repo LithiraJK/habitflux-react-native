@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 export const showToast = (
-  type: 'success' | 'error' | 'info',
+  type: 'success' | 'error' | 'info' | 'warning',
   title: string,
   message?: string
 ) => {

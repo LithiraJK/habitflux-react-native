@@ -1,7 +1,6 @@
 import { Colors } from "@/constants/theme";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
 import { useRouter } from "expo-router";
-import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";

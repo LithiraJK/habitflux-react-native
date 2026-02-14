@@ -8,11 +8,11 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  Timestamp,
   updateDoc,
   where,
-  Timestamp,
 } from "firebase/firestore";
-import { db, auth } from "./firebase";
+import { auth, db } from "./firebase";
 
 export interface Category {
   id?: string;
@@ -34,11 +34,14 @@ const DEFAULT_CATEGORIES = [
   { title: "Study", icon: "school", color: "#818CF8" },
 ];
 
+let isInitializing = false;
+
 export const initializeUserCategories = async () => {
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user || isInitializing) return;
 
   try {
+    isInitializing = true;
     const q = query(categoryCollection, where("userId", "==", user.uid));
     const snapshot = await getDocs(q);
 
@@ -51,19 +54,23 @@ export const initializeUserCategories = async () => {
           isDefault: true,
           entries: 0,
           createdAt: serverTimestamp(),
-        })
+        }),
       );
-      // Add all data in parallel
       await Promise.all(promises);
       console.log("Default categories initialized for:", user.uid);
     }
   } catch (error) {
     console.error("Initialization Error:", error);
+  } finally {
+    isInitializing = false;
   }
 };
 
-
-export const addCategory = async (title: string, icon: string, color: string) => {
+export const addCategory = async (
+  title: string,
+  icon: string,
+  color: string,
+) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated.");
 
@@ -77,7 +84,6 @@ export const addCategory = async (title: string, icon: string, color: string) =>
   });
 };
 
-
 export const getAllCategory = async () => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated.");
@@ -85,7 +91,7 @@ export const getAllCategory = async () => {
   const q = query(
     categoryCollection,
     where("userId", "==", user.uid),
-    orderBy("createdAt", "desc")
+    orderBy("createdAt", "desc"),
   );
 
   const snapshot = await getDocs(q);
@@ -103,7 +109,6 @@ export const getAllCategory = async () => {
     } as Category;
   });
 };
-
 
 export const getCategoryById = async (id: string) => {
   const user = auth.currentUser;
@@ -123,10 +128,9 @@ export const getCategoryById = async (id: string) => {
   };
 };
 
-
 export const updateCategory = async (
   id: string,
-  updates: Partial<Omit<Category, "id" | "userId" | "createdAt">>
+  updates: Partial<Omit<Category, "id" | "userId" | "createdAt">>,
 ) => {
   const user = auth.currentUser;
   if (!user) throw new Error("User not authenticated.");
@@ -142,7 +146,6 @@ export const updateCategory = async (
     updatedAt: serverTimestamp(),
   });
 };
-
 
 export const deleteCategory = async (id: string) => {
   const user = auth.currentUser;

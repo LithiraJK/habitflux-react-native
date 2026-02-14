@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useRouter } from "expo-router";
-import React, { useMemo, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { useMemo, useState } from "react";
 import {
   Modal,
   ScrollView,
@@ -15,6 +15,7 @@ import {
 import { Colors } from "@/constants/theme";
 import { useLoader } from "@/hooks/useLoader";
 import { addHabit } from "@/services/habitService";
+import { NotificationService } from "@/services/notificationService";
 import { useHabitCreateStore } from "@/store/useHabitCreatestore";
 import { showToast } from "@/utils/notifications";
 
@@ -65,11 +66,12 @@ const Reminders = () => {
   const getDisplayDate = (date: Date) => date.toISOString().split("T")[0];
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = minutes.toString().padStart(2, "0");
+    return `${displayHours.toString().padStart(2, "0")}:${displayMinutes} ${ampm}`;
   };
 
   const onStartDateChange = (event: any, selectedDate?: Date) => {
@@ -115,10 +117,52 @@ const Reminders = () => {
     try {
       showLoader();
 
+      const notificationIds: string[] = [];
+
+      // Only schedule notifications if reminders are added
+      if (reminders.length > 0) {
+        try {
+          const hasPermission = await NotificationService.requestPermissions();
+
+          if (hasPermission) {
+            for (const r of reminders) {
+              if (r.type === "notification") {
+                const timeStr = formatTime(r.time);
+                console.log("Scheduling notification for:", timeStr);
+                const id = await NotificationService.scheduleDailyReminder(
+                  habitData.title || "HabitFlux Reminder",
+                  timeStr,
+                );
+                notificationIds.push(id);
+                console.log("Notification scheduled with ID:", id);
+              }
+            }
+            showToast(
+              "success",
+              "Reminders Set",
+              `${notificationIds.length} reminder(s) scheduled!`,
+            );
+          } else {
+            console.warn("Notification permissions not granted");
+            showToast(
+              "info",
+              "Note",
+              "Enable notifications in settings to receive reminders.",
+            );
+          }
+        } catch (notificationError: any) {
+          console.error("Notification scheduling error:", notificationError);
+          showToast(
+            "warning",
+            "Habit will be saved but reminders couldn't be scheduled.",
+          );
+        }
+      }
+
       const formattedReminders = reminders
         .filter((r) => r.type !== "none")
         .map((r) => ({
-          time: r.time.toISOString(),
+          time: formatTime(r.time),
           type: r.type,
           schedule: r.schedule,
         }));
@@ -129,12 +173,13 @@ const Reminders = () => {
         endDate: isEndDateEnabled ? endDate.toISOString() : null,
         priority: priority,
         reminders: formattedReminders,
-
+        notificationIds: notificationIds,
         category: habitData.category || "General",
         type: habitData.type || "yes_no",
         dailyTarget: habitData.dailyTarget || 1,
       };
 
+      console.log("Saving habit data:", finalHabitData);
       await addHabit(finalHabitData);
 
       showToast("success", "Success", "Habit created successfully!");
@@ -143,7 +188,8 @@ const Reminders = () => {
       router.replace("/(drawer)/(tabs)/home");
     } catch (error: any) {
       console.error("Error saving habit:", error);
-      showToast("error", "Error", "Failed to create habit.");
+      console.error("Error details:", error.message);
+      showToast("error", "Error", error.message || "Failed to create habit.");
     } finally {
       hideLoader();
     }
@@ -163,6 +209,7 @@ const Reminders = () => {
         </Text>
 
         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          {/* Start Date Selection */}
           <View className="flex-row justify-between items-center mb-8">
             <View className="flex-row items-center">
               <Ionicons
@@ -200,6 +247,7 @@ const Reminders = () => {
             />
           )}
 
+          {/* End Date Selection */}
           <View className="mb-8">
             <View className="flex-row justify-between items-center">
               <View className="flex-row items-center">
@@ -273,6 +321,7 @@ const Reminders = () => {
             )}
           </View>
 
+          {/* Reminders Modal Trigger */}
           <View className="flex-row justify-between items-center mb-8">
             <View className="flex-row items-center">
               <Ionicons
@@ -301,6 +350,7 @@ const Reminders = () => {
             </TouchableOpacity>
           </View>
 
+          {/* Priority Selection */}
           <View className="flex-row justify-between items-center mb-8">
             <View className="flex-row items-center">
               <Ionicons
@@ -334,7 +384,7 @@ const Reminders = () => {
           </View>
         </ScrollView>
 
-        {/* --- Footer Navigation --- */}
+        {/* Footer Navigation */}
         <View className="mt-auto flex-row justify-between items-center mb-6">
           <TouchableOpacity onPress={() => router.back()}>
             <Text
@@ -345,26 +395,16 @@ const Reminders = () => {
             </Text>
           </TouchableOpacity>
           <View className="flex-row space-x-2">
-            <View
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: Colors.dark.disabled }}
-            />
-            <View
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: Colors.dark.disabled }}
-            />
-            <View
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: Colors.dark.disabled }}
-            />
-            <View
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: Colors.dark.disabled }}
-            />
-            <View
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: Colors.dark.primary }}
-            />
+            {[1, 2, 3, 4, 5].map((dot) => (
+              <View
+                key={dot}
+                className="w-2 h-2 rounded-full"
+                style={{
+                  backgroundColor:
+                    dot === 5 ? Colors.dark.primary : Colors.dark.disabled,
+                }}
+              />
+            ))}
           </View>
           <TouchableOpacity onPress={handleSave}>
             <Text
@@ -421,7 +461,6 @@ const Reminders = () => {
                 />
               )}
 
-              {/* Reminder Type Selection */}
               <Text
                 className="mb-3 text-sm font-medium"
                 style={{ color: Colors.dark.textSecondary }}
@@ -478,7 +517,6 @@ const Reminders = () => {
                 )}
               </View>
 
-              {/* Reminder Schedule */}
               <Text
                 className="mb-3 text-sm font-medium"
                 style={{ color: Colors.dark.textSecondary }}
@@ -494,7 +532,7 @@ const Reminders = () => {
                   <TouchableOpacity
                     key={item.id}
                     onPress={() => setTempSchedule(item.id as ReminderSchedule)}
-                    className="flex-row items-center"
+                    className="flex-row items-center mb-3"
                   >
                     <View
                       className="w-5 h-5 rounded-full border-2 mr-3 items-center justify-center"
